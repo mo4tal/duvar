@@ -1,0 +1,25 @@
+[Icon Theme]
+Name=Hicolor
+Comment=Duvar icons
+Directories=scalable/actions,scalable/apps,symbolic/apps
+
+[scalable/actions]
+Size=16
+MinSize=8
+MaxSize=512
+Type=Scalable
+Context=Actions
+
+[scalable/apps]
+Size=128
+MinSize=16
+MaxSize=512
+Type=Scalable
+Context=Applications
+
+[symbolic/apps]
+Size=16
+MinSize=8
+MaxSize=512
+Type=Scalable
+Context=Applications

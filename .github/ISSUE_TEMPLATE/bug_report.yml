@@ -1,0 +1,29 @@
+name: Bug Report
+description: Report a bug or visual glitch in Duvar
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Briefly describe the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Duvar preferences
+        2. Switch to ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment & `duvar-doctor` output
+      description: Paste `gnome-shell --version` and `./duvar-doctor` output (contains no personal keys or wallpapers).
+      render: shell
+    validations:
+      required: false

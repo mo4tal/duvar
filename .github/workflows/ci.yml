@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Rust & Palette Verification
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+    steps:
+      - name: Install toolchain & GNOME libraries
+        run: |
+          pacman -Syu --noconfirm --needed \
+            git rust pkgconf python gtk4 libadwaita glib2 gobject-introspection \
+            gjs gdk-pixbuf2 librsvg gnome-shell unzip tar
+
+      - uses: actions/checkout@v4
+
+      - name: Format check
+        run: cargo fmt --all --check
+
+      - name: Clippy (-D warnings)
+        run: cargo clippy --locked --all-targets -- -D warnings
+
+      - name: Rust unit tests
+        run: |
+          TMPXDG=$(mktemp -d)
+          XDG_DATA_HOME="$TMPXDG" cargo test --locked --lib
+          rm -rf "$TMPXDG"
+
+      - name: Palette contrast, Shell CSS & worker tests
+        run: |
+          gjs -m tests/palette-roles.js
+          bash tests/palette-worker.sh
+
+      - name: Validate GSettings schema & store ZIP
+        run: |
+          glib-compile-schemas --strict --dry-run extension/schemas
+          bash distribution/pack-store.sh

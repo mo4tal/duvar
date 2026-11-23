@@ -1,0 +1,14 @@
+[Unit]
+Description=Follow Duvar palettes in Ghostty
+PartOf=graphical-session.target
+After=graphical-session-pre.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+ExecStart=/usr/bin/python %h/.local/lib/duvar/ghostty-sync.py
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=graphical-session.target

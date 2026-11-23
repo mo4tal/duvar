@@ -1,0 +1,9 @@
+/target/
+/dist/
+/extension/native/*.so
+/extension/native/*.typelib
+/extension/schemas/gschemas.compiled
+__pycache__/
+*.pyc
+/docs/*.log
+.DS_Store

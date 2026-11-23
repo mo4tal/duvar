@@ -1,0 +1,12 @@
+{
+  "uuid": "duvar@mo4tal.local",
+  "name": "Duvar",
+  "description": "GNOME için çok kaynaklı duvar kâğıdı galerisi ve duvar kâğıdına uyarlanan dinamik renk motoru.",
+  "url": "https://github.com/mo4tal/duvar",
+  "shell-version": [
+    "51"
+  ],
+  "version": 19,
+  "version-name": "0.6.0",
+  "settings-schema": "org.gnome.shell.extensions.duvar"
+}

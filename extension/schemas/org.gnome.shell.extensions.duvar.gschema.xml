@@ -1,0 +1,15 @@
+<schemalist>
+ <schema id="org.gnome.shell.extensions.duvar" path="/org/gnome/shell/extensions/duvar/">
+  <key name="configuration" type="s"><default>'{}'</default><summary>Gallery preferences and favorites; API keys are never stored here.</summary></key>
+  <key name="palette-enabled" type="b"><default>false</default><summary>Apply the staged wallpaper palette.</summary></key>
+  <key name="palette-follow" type="b"><default>true</default><summary>Analyze new desktop wallpapers while Duvar colors are enabled.</summary></key>
+  <key name="palette-gtk" type="b"><default>true</default><summary>Also select the GTK theme when Duvar colors are enabled.</summary></key>
+  <key name="palette-adwaita" type="b"><default>false</default><summary>Install a scoped GTK 4.20+ user CSS import for libadwaita applications.</summary></key>
+  <key name="palette-adwaita-refresh" type="b"><default>false</default><summary>Temporarily toggle GNOME high contrast to reload libadwaita user styles.</summary></key>
+  <key name="palette-panel-style" type="s"><default>'capsule'</default><summary>Top bar readability style: capsule, smart, scrim, or plain.</summary></key>
+  <key name="palette-panel-capsule-strength" type="s"><default>'balanced'</default><summary>Top bar floating glass capsule density: subtle, balanced, or crisp.</summary></key>
+  <key name="palette-colors" type="s"><default>''</default><summary>Validated light and dark theme colors.</summary></key>
+  <key name="palette-ownership" type="s"><default>''</default><summary>Previous settings and last values owned by Duvar.</summary></key>
+  <key name="palette-status" type="s"><default>''</default><summary>Theme runtime status.</summary></key>
+ </schema>
+</schemalist>

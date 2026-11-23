@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<repository version="1.2"
+ xmlns="http://www.gtk.org/introspection/core/1.0"
+ xmlns:c="http://www.gtk.org/introspection/c/1.0"
+ xmlns:glib="http://www.gtk.org/introspection/glib/1.0">
+ <include name="Adw" version="1"/>
+ <namespace name="Duvar" version="1.0" shared-library="libduvar_native.so"
+  c:identifier-prefixes="Duvar" c:symbol-prefixes="duvar">
+  <function name="populate" c:identifier="duvar_populate">
+   <return-value transfer-ownership="none"><type name="none" c:type="void"/></return-value>
+   <parameters><parameter name="window" transfer-ownership="none">
+    <type name="Adw.PreferencesWindow" c:type="AdwPreferencesWindow*"/>
+   </parameter><parameter name="extension_directory" transfer-ownership="none"><type name="utf8" c:type="const char*"/></parameter></parameters>
+  </function>
+  <function name="version" c:identifier="duvar_version"><return-value transfer-ownership="none"><type name="utf8" c:type="const char*"/></return-value></function>
+ </namespace>
+</repository>
