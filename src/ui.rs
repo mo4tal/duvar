@@ -1756,7 +1756,7 @@ fn switch(
 )]
 pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
     window.set_title(Some("Duvar"));
-    window.set_icon_name(Some("local.mo4tal.Duvar"));
+    window.set_icon_name(Some("io.github.mo4tal.Duvar"));
     let css_provider = if let Some(display) = gdk::Display::default() {
         gtk::IconTheme::for_display(&display).add_search_path(directory.join("icons"));
         let provider = gtk::CssProvider::new();

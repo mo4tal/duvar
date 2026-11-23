@@ -356,7 +356,7 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
         ))
         .activatable(true)
         .build();
-    let app_logo = gtk::Image::from_icon_name("local.mo4tal.Duvar");
+    let app_logo = gtk::Image::from_icon_name("io.github.mo4tal.Duvar");
     app_logo.set_pixel_size(32);
     about.add_prefix(&app_logo);
     about.add_suffix(&gtk::Image::from_icon_name("go-next-symbolic"));
@@ -378,7 +378,7 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
             );
             let about = adw::AboutDialog::builder()
                 .application_name("Duvar")
-                .application_icon("local.mo4tal.Duvar")
+                .application_icon("io.github.mo4tal.Duvar")
                 .version(env!("CARGO_PKG_VERSION"))
                 .developer_name("mo4tal")
                 .developers(vec!["mo4tal https://github.com/mo4tal".to_string()])

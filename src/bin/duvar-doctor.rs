@@ -26,8 +26,9 @@ fn run() -> anyhow::Result<bool> {
             .and_then(|i| args.get(i + 1))
             .map(PathBuf::from)
     };
-    let extension = value("--extension")
-        .unwrap_or_else(|| glib::user_data_dir().join("gnome-shell/extensions/duvar@mo4tal.local"));
+    let extension = value("--extension").unwrap_or_else(|| {
+        glib::user_data_dir().join("gnome-shell/extensions/duvar@mo4tal.github.io")
+    });
     let mut report = duvar_native::doctor::report(
         &extension,
         args.iter().any(|a| a == "--network"),

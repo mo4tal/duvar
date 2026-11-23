@@ -9,7 +9,7 @@ All notable changes to **Duvar** are documented in this file.
 - **Direct Shell stylesheet loading:** Applies GNOME Shell theme styles via `St.Theme.load_stylesheet` even when the User Themes extension is not installed or enabled, while staying compatible when User Themes is active.
 - **OKLab dominant color & 16-slice contrast engine:** Perceptual OKLab clustering paired with spatial top-bar luminance profiling to preserve legibility across opposite-brightness wallpapers (e.g. pitch-black wallpaper in light mode or bright wallpaper in dark mode).
 - **Pro Lightbox preview:** Instant progressive transition from cached thumbnail to native pixels, cursor-anchored mouse-wheel zoom, left-click drag-to-pan, touch pinch zoom, right-click context popover, `←/→` navigation, and an `AdwOverlaySplitView` metadata/tags drawer.
-- **Original GNOME / Adwaita app icon:** Full-color scalable SVG (`local.mo4tal.Duvar.svg`) and monochrome symbolic SVG (`local.mo4tal.Duvar-symbolic.svg`), bundled in both the full and EGO store packages.
+- **Original GNOME / Adwaita app icon:** Full-color scalable SVG (`io.github.mo4tal.Duvar.svg`) and monochrome symbolic SVG (`io.github.mo4tal.Duvar-symbolic.svg`), bundled in both the full and EGO store packages.
 - **Redesigned About dialog & metadata:** Full `AdwAboutDialog` with release notes, technical debug info, GitHub repository/issue links, and synchronized `0.6.0` package contracts.
 
 ### Changed

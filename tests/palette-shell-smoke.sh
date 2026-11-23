@@ -19,7 +19,7 @@ if [[ ${1:-} != --child ]]; then
     if [[ -d "$real_data/gnome-shell/extensions/$blur" ]]; then
         cp -r "$real_data/gnome-shell/extensions/$blur" "$extensions/"
     fi
-    ext="$extensions/duvar@mo4tal.local"
+    ext="$extensions/duvar@mo4tal.github.io"
     mkdir -p "$ext/schemas"
     if [[ -n ${DUVAR_STORE_ZIP:-} ]]; then
         unzip -oq "$DUVAR_STORE_ZIP" -d "$ext/"
@@ -77,7 +77,7 @@ JS
 fi
 t=$2
 extensions="$XDG_DATA_HOME/gnome-shell/extensions"
-uuid=duvar@mo4tal.local
+uuid=duvar@mo4tal.github.io
 user=user-theme@gnome-shell-extensions.gcampax.github.com
 blur=blur-my-shell@aunetx
 theme() {
@@ -204,8 +204,9 @@ capture() {
 }
 check_toggle_pixels() {
     # Only the quick-settings rows, not the GTK probe or the wallpaper.
+    # Allow small compositing delta (<=12/255) when Blur My Shell blends popups over vivid wallpapers.
     magick "$XDG_CACHE_HOME/$1.png" -gravity NorthEast -crop 405x142+18+105 +repage -depth 8 rgb:- |
-        python -c 'import sys; b = sys.stdin.buffer.read(); c = bytes.fromhex(sys.argv[1]); n = sum(b[i:i+3] == c for i in range(0, len(b), 3)); print(f"{sys.argv[1]}: {n} toggle pixels"); sys.exit(n < 500)' "$2"
+        python -c 'import sys; b = sys.stdin.buffer.read(); cr, cg, cb = bytes.fromhex(sys.argv[1]); n = sum(abs(b[i]-cr)<=12 and abs(b[i+1]-cg)<=12 and abs(b[i+2]-cb)<=12 for i in range(0, len(b), 3)); print(f"{sys.argv[1]}: {n} toggle pixels"); sys.exit(n < 500)' "$2"
 }
 capture light
 check_toggle_pixels light 784030

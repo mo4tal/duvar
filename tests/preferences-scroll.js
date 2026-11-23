@@ -12,7 +12,7 @@ const settings=Gio.Settings.new_full(schemaSource.lookup('org.gnome.shell.extens
 settings.set_string('configuration',JSON.stringify({wallhaven:false,openverse:false,local:true,local_directory:GLib.getenv('DUVAR_SCROLL_FIXTURES'),remember_sensitive:true,policy:{unknown:true}}));
 const metadata=JSON.parse(new TextDecoder().decode(GLib.file_get_contents(`${directory}/metadata.json`)[1]));
 const preferences=new Preferences({...metadata,metadata,path:directory,dir:Gio.File.new_for_path(directory)});
-const app=new Adw.Application({application_id:'local.mo4tal.Duvar.Scroll',flags:Gio.ApplicationFlags.NON_UNIQUE});
+const app=new Adw.Application({application_id:'io.github.mo4tal.Duvar.Scroll',flags:Gio.ApplicationFlags.NON_UNIQUE});
 let failure=null;
 function widgets(w){let a=[w];for(let c=w.get_first_child();c;c=c.get_next_sibling())a.push(...widgets(c));return a;}
 app.connect('activate',()=>{

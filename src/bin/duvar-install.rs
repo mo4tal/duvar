@@ -41,7 +41,7 @@ fn main() -> Result<()> {
     let adjacent = std::env::current_exe()?
         .parent()
         .context("Kurucu klasörü yok")?
-        .join("duvar@mo4tal.local.shell-extension.zip");
+        .join("duvar@mo4tal.github.io.shell-extension.zip");
     let input = match args.get(1) {
         Some(p) => PathBuf::from(p),
         None if mode != "--rollback" => adjacent,
@@ -55,7 +55,7 @@ fn main() -> Result<()> {
     })?;
     let root = glib::user_data_dir().join("gnome-shell/extensions");
     fs::create_dir_all(&root)?;
-    let target = root.join("duvar@mo4tal.local");
+    let target = root.join("duvar@mo4tal.github.io");
     let stage = if mode == "--check" {
         tempfile::Builder::new().prefix("duvar-check-").tempdir()?
     } else {
@@ -140,7 +140,7 @@ fn main() -> Result<()> {
     }
     let meta: serde_json::Value =
         serde_json::from_slice(&fs::read(stage.path().join("metadata.json"))?)?;
-    if meta["uuid"] != "duvar@mo4tal.local" {
+    if meta["uuid"] != "duvar@mo4tal.github.io" {
         bail!("Bu paket Duvar uzantısına ait değil");
     }
     if !Command::new("/usr/bin/glib-compile-schemas")

@@ -1,6 +1,6 @@
 # AGENTS.md — Duvar Architecture & Contributor Guide
 
-Guide for AI coding assistants and human contributors working on **Duvar** (`duvar@mo4tal.local`).
+Guide for AI coding assistants and human contributors working on **Duvar** (`duvar@mo4tal.github.io`).
 
 ## 1. What Duvar Is
 
@@ -41,7 +41,7 @@ duvar/
 │   ├── user-theme-policy.js    # User Themes activation policy (auto for local, manual for EGO)
 │   ├── setup-palette.sh        # Optional dependency checker/enabler script
 │   ├── schemas/                # GSettings XML schema (org.gnome.shell.extensions.duvar)
-│   ├── icons/hicolor/          # App icons (local.mo4tal.Duvar) & symbolic filter icon
+│   ├── icons/hicolor/          # App icons (io.github.mo4tal.Duvar) & symbolic filter icon
 │   └── native/Duvar-1.0.gir    # GObject Introspection definition for duvar_populate / duvar_version
 │
 ├── src/                        # Rust native library (duvar_native) & tooling
@@ -94,7 +94,7 @@ duvar/
 │   └── install-roundtrip.py    # Isolated install/upgrade/rollback verification
 │
 └── docs/                       # User & packaging documentation + visual assets
-    ├── icon.svg                # Application icon (copy of local.mo4tal.Duvar.svg)
+    ├── icon.svg                # Application icon (copy of io.github.mo4tal.Duvar.svg)
     ├── DISTRIBUTION.md         # Sharing, installation & build instructions (TR + EN)
     ├── SOURCES.md              # Source API contracts & content safety rules
     └── screenshots/            # Real Wayland screenshots used in README.md
@@ -132,21 +132,21 @@ bash distribution/pack-store.sh
 ```
 Outputs go into `dist/` (gitignored):
 - `dist/duvar-<ver>-linux-<arch>.tar.gz` — self-contained sharing bundle (`duvar-install`, `duvar-doctor`, ZIP, source tarball, `SHA256SUMS`)
-- `dist/duvar@mo4tal.local.shell-extension.zip` — full extension ZIP with native Rust gallery
-- `dist/store/duvar@mo4tal.local.shell-extension.zip` — pure-JS EGO store candidate
+- `dist/duvar@mo4tal.github.io.shell-extension.zip` — full extension ZIP with native Rust gallery
+- `dist/store/duvar@mo4tal.github.io.shell-extension.zip` — pure-JS EGO store candidate
 
 ### Full Wayland GUI & Headless GNOME Shell 51 verification
 ```sh
 python3 tests/run-preferences-smoke.py
 bash tests/palette-shell-smoke.sh
-DUVAR_STORE_ZIP=dist/store/duvar@mo4tal.local.shell-extension.zip bash tests/palette-shell-smoke.sh
+DUVAR_STORE_ZIP=dist/store/duvar@mo4tal.github.io.shell-extension.zip bash tests/palette-shell-smoke.sh
 python3 tests/install-roundtrip.py
 ```
 > All tests run inside private temporary `HOME` / `XDG_*` / `dbus-run-session` sandboxes and never touch the host desktop settings, keyring, or wallpapers. Smoke logs and test screenshots default to `target/smoke/`.
 
 ### Local atomic installation
 ```sh
-./target/release/duvar-install --install dist/duvar@mo4tal.local.shell-extension.zip
+./target/release/duvar-install --install dist/duvar@mo4tal.github.io.shell-extension.zip
 ./target/release/duvar-doctor
 ```
 

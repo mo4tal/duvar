@@ -63,7 +63,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true", help="write themes without reloading Ghostty")
     args = parser.parse_args()
-    schema_dir = Path(GLib.get_user_data_dir()) / "gnome-shell/extensions/duvar@mo4tal.local/schemas"
+    schema_dir = Path(GLib.get_user_data_dir()) / "gnome-shell/extensions/duvar@mo4tal.github.io/schemas"
     source = Gio.SettingsSchemaSource.new_from_directory(str(schema_dir), None, False)
     settings = Gio.Settings.new_full(source.lookup(SCHEMA, False), None, None)
     directory = Path(GLib.get_user_config_dir()) / "ghostty/themes"

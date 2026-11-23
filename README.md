@@ -114,7 +114,7 @@ Derlenmiş yerel kitaplık olmadan yalnızca dinamik renk ve üst panel kapsül 
 
 ```sh
 bash distribution/pack-store.sh
-gnome-extensions install --force dist/store/duvar@mo4tal.local.shell-extension.zip
+gnome-extensions install --force dist/store/duvar@mo4tal.github.io.shell-extension.zip
 ```
 
 ---
@@ -128,7 +128,7 @@ git clone https://github.com/mo4tal/duvar.git
 cd duvar
 cargo build --release --locked
 ./target/release/duvar-package
-./target/release/duvar-install --install dist/duvar@mo4tal.local.shell-extension.zip
+./target/release/duvar-install --install dist/duvar@mo4tal.github.io.shell-extension.zip
 ```
 
 ### Doğrulama Testleri
@@ -167,7 +167,7 @@ tar -xzf duvar-0.6.0-linux-x86_64.tar.gz && cd duvar-0.6.0-linux-x86_64
 # Or build from source:
 git clone https://github.com/mo4tal/duvar.git && cd duvar
 cargo build --release --locked && ./target/release/duvar-package
-./target/release/duvar-install --install dist/duvar@mo4tal.local.shell-extension.zip
+./target/release/duvar-install --install dist/duvar@mo4tal.github.io.shell-extension.zip
 ```
 
 Full bilingual distribution & packaging notes: [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md).

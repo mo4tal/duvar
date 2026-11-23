@@ -12,7 +12,7 @@ const {default:Preferences}=await import(`file://${directory}/prefs.js`);
 const metadata=JSON.parse(new TextDecoder().decode(Gio.File.new_for_path(`${directory}/metadata.json`).load_contents(null)[1]));
 const cached={...metadata,'version-name':'0.0.0-stale-shell-cache'};
 const prefs=new Preferences({...cached,metadata:cached,path:directory,dir:Gio.File.new_for_path(directory)});
-const app=new Adw.Application({application_id:'local.mo4tal.Duvar.VersionGuard',flags:Gio.ApplicationFlags.NON_UNIQUE});
+const app=new Adw.Application({application_id:'io.github.mo4tal.Duvar.VersionGuard',flags:Gio.ApplicationFlags.NON_UNIQUE});
 let failure;
 app.connect('activate',()=>{app.hold();(async()=>{
  const window=new Adw.PreferencesWindow({application:app});

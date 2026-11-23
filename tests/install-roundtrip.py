@@ -3,13 +3,13 @@ import hashlib,json,os,shutil,subprocess,tempfile,zipfile,tarfile
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
 bins=Path(os.environ.get('DUVAR_BIN_DIR',Path(os.environ.get('CARGO_TARGET_DIR',root/'target'))/'release'))
-archive=root/'dist/duvar@mo4tal.local.shell-extension.zip'
+archive=root/'dist/duvar@mo4tal.github.io.shell-extension.zip'
 version=json.loads((root/'dist/manifest.json').read_text())['version']
 sharing=next((root/'dist').glob(f'duvar-{version}-linux-*.tar.gz'))
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 assert (sharing.parent/(sharing.name+'.sha256')).read_text()==f'{sha(sharing)}  {sharing.name}\n'
 with tempfile.TemporaryDirectory(prefix='duvar-install-test-') as tmp:
-    t=Path(tmp);data=t/'data';state=t/'state';config=t/'config';target=data/'gnome-shell/extensions/duvar@mo4tal.local'
+    t=Path(tmp);data=t/'data';state=t/'state';config=t/'config';target=data/'gnome-shell/extensions/duvar@mo4tal.github.io'
     target.mkdir(parents=True)
     with zipfile.ZipFile(archive) as z:z.extractall(target)
     subprocess.run(['glib-compile-schemas','--strict',str(target/'schemas')],check=True)

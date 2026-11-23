@@ -8,7 +8,7 @@ use std::{
     path::Path,
     process::Command,
 };
-pub const UUID: &str = "duvar@mo4tal.local";
+pub const UUID: &str = "duvar@mo4tal.github.io";
 pub const BUILD_MANIFEST: &str = "native/duvar-build.json";
 pub const PAYLOAD_FILES: &[&str] = &[
     "metadata.json",
@@ -27,8 +27,8 @@ pub const PAYLOAD_FILES: &[&str] = &[
     "schemas/org.gnome.shell.extensions.duvar.gschema.xml",
     "icons/hicolor/index.theme",
     "icons/hicolor/scalable/actions/duvar-filter-symbolic.svg",
-    "icons/hicolor/scalable/apps/local.mo4tal.Duvar.svg",
-    "icons/hicolor/symbolic/apps/local.mo4tal.Duvar-symbolic.svg",
+    "icons/hicolor/scalable/apps/io.github.mo4tal.Duvar.svg",
+    "icons/hicolor/symbolic/apps/io.github.mo4tal.Duvar-symbolic.svg",
 ];
 pub fn sha(path: &Path) -> Result<String> {
     use sha2::{Digest, Sha256};

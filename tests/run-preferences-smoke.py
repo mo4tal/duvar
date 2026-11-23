@@ -13,7 +13,7 @@ with tempfile.TemporaryDirectory(prefix='duvar-test-runtime-',dir=test_parent) a
         extension=Path(extension_override)
     else:
         extension=Path(d)/'extension'
-        archive=root/'dist/duvar@mo4tal.local.shell-extension.zip'
+        archive=root/'dist/duvar@mo4tal.github.io.shell-extension.zip'
         if not archive.exists():raise RuntimeError('Önce duvar-package ile ZIP oluştur.')
         with zipfile.ZipFile(archive) as z:
             if any(Path(n).is_absolute() or '..' in Path(n).parts for n in z.namelist()):raise RuntimeError('Geçersiz ZIP yolu')

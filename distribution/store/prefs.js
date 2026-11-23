@@ -8,7 +8,7 @@ export default class DuvarPreferences extends ExtensionPreferences {
         const display = Gdk.Display.get_default();
         if (display)
             Gtk.IconTheme.get_for_display(display).add_search_path(`${this.path}/icons`);
-        window.set_icon_name('local.mo4tal.Duvar');
+        window.set_icon_name('io.github.mo4tal.Duvar');
         addPalettePage(window, this.getSettings(), this.path);
     }
 }

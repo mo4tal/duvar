@@ -13,7 +13,7 @@ const background=Gio.Settings.new('org.gnome.desktop.background');
 const original=GLib.getenv('DUVAR_TEST_ORIGINAL'), originalDark=GLib.getenv('DUVAR_TEST_ORIGINAL_DARK');
 background.set_string('picture-uri',original);background.set_string('picture-uri-dark',originalDark);
 function checkPair(light,dark){if(background.get_string('picture-uri')!==light||background.get_string('picture-uri-dark')!==dark)throw Error('Unexpected light/dark wallpaper pair');}
-const app=new Adw.Application({application_id:'local.mo4tal.Duvar.Smoke',flags:Gio.ApplicationFlags.NON_UNIQUE});let failed=false;
+const app=new Adw.Application({application_id:'io.github.mo4tal.Duvar.Smoke',flags:Gio.ApplicationFlags.NON_UNIQUE});let failed=false;
 function widgets(w){const a=[w];for(let c=w.get_first_child();c;c=c.get_next_sibling())a.push(...widgets(c));return a;}
 function delay(ms){return new Promise(resolve=>GLib.timeout_add(GLib.PRIORITY_DEFAULT,ms,()=>{resolve();return GLib.SOURCE_REMOVE;}));}
 async function wait(check,message){for(let i=0;i<60;i++){if(check())return;await delay(50);}throw Error(message);}

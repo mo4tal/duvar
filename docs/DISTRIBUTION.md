@@ -28,7 +28,7 @@ git clone https://github.com/mo4tal/duvar.git
 cd duvar
 cargo build --release --locked
 ./target/release/duvar-package
-./target/release/duvar-install --install dist/duvar@mo4tal.local.shell-extension.zip
+./target/release/duvar-install --install dist/duvar@mo4tal.github.io.shell-extension.zip
 ```
 
 ### 3. GNOME Extensions (EGO) için saf-JS paket
@@ -37,10 +37,10 @@ Tam sürüm; derlenmiş Rust kitaplığını (`libduvar_native.so`) ve GI typeli
 
 ```sh
 bash distribution/pack-store.sh
-# Çıktı: dist/store/duvar@mo4tal.local.shell-extension.zip
+# Çıktı: dist/store/duvar@mo4tal.github.io.shell-extension.zip
 ```
 
-İki paket aynı UUID’yi (`duvar@mo4tal.local`) ve aynı GSettings şemasını kullanır; aynı anda yalnızca biri kurulur.
+İki paket aynı UUID’yi (`duvar@mo4tal.github.io`) ve aynı GSettings şemasını kullanır; aynı anda yalnızca biri kurulur.
 
 ### 4. Renk motoru katmanları
 
@@ -78,7 +78,7 @@ git clone https://github.com/mo4tal/duvar.git
 cd duvar
 cargo build --release --locked
 ./target/release/duvar-package
-./target/release/duvar-install --install dist/duvar@mo4tal.local.shell-extension.zip
+./target/release/duvar-install --install dist/duvar@mo4tal.github.io.shell-extension.zip
 ```
 
 ### 3. Pure-JS GNOME Extensions (EGO) variant
@@ -87,7 +87,7 @@ Because extensions.gnome.org does not accept precompiled native libraries, a gal
 
 ```sh
 bash distribution/pack-store.sh
-# Output: dist/store/duvar@mo4tal.local.shell-extension.zip
+# Output: dist/store/duvar@mo4tal.github.io.shell-extension.zip
 ```
 
 ### 4. Verification commands

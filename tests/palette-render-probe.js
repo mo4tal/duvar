@@ -42,7 +42,7 @@ export default class RenderProbe extends Extension {
                     if (!a11y.get_boolean('high-contrast')) return;
                     a11y.disconnect(id);
                     GLib.idle_add(GLib.PRIORITY_HIGH_IDLE, () => {
-                        const uuid = 'duvar@mo4tal.local';
+                        const uuid = 'duvar@mo4tal.github.io';
                         const instance = Main.extensionManager.lookup(uuid).stateObj;
                         const disable = instance.disable;
                         instance.disable = function () {

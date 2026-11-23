@@ -9,7 +9,7 @@ const repo=GIRepository.Repository.dup_default();repo.prepend_search_path(`${dir
 const {default: Preferences}=await import(`file://${directory}/prefs.js`);
 const metadata=JSON.parse(new TextDecoder().decode(GLib.file_get_contents(`${directory}/metadata.json`)[1]));
 const preferences=new Preferences({...metadata,metadata,path:directory,dir:Gio.File.new_for_path(directory)});
-const app=new Adw.Application({application_id:'local.mo4tal.Duvar.Queue',flags:Gio.ApplicationFlags.NON_UNIQUE});
+const app=new Adw.Application({application_id:'io.github.mo4tal.Duvar.Queue',flags:Gio.ApplicationFlags.NON_UNIQUE});
 let failure=null;
 function widgets(w){let a=[w];for(let c=w.get_first_child();c;c=c.get_next_sibling())a.push(...widgets(c));return a;}
 app.connect('activate',()=>{
