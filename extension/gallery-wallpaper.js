@@ -17,8 +17,10 @@ function canonical(path) {
     });
 }
 
-export function addWallpaperAction(group, window, settings, mode, title, isClosed) {
-    const action = new Adw.ButtonRow({title: `${title} için uygula`, start_icon_name: 'folder-open-symbolic'});
+export function addWallpaperAction(group, window, settings, mode, title, isClosed, t = null) {
+    const label = t ? t('colors.pick_for_theme', {title}) : `${title} için uygula`;
+    const dialogTitle = t ? t('colors.choose_for_theme', {title}) : `${title} için görsel seç`;
+    const action = new Adw.ButtonRow({title: label, start_icon_name: 'folder-open-symbolic'});
     action.connect('activated', () => {
         let config = {};
         try { config = JSON.parse(settings.get_string('configuration')) ?? {}; } catch {}
@@ -26,7 +28,7 @@ export function addWallpaperAction(group, window, settings, mode, title, isClose
             GLib.build_filenamev([GLib.get_home_dir(), 'Pictures']);
         const folder = Gio.File.new_for_path(config.local_directory || config.download_directory ||
             GLib.build_filenamev([pictures, 'Duvar']));
-        const dialog = new Gtk.FileDialog({title: `${title} için görsel seç`, initial_folder: folder, accept_label: action.title});
+        const dialog = new Gtk.FileDialog({title: dialogTitle, initial_folder: folder, accept_label: action.title});
         const filter = new Gtk.FileFilter();
         filter.add_pixbuf_formats();
         const filters = new Gio.ListStore({item_type: Gtk.FileFilter});

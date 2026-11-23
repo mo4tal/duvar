@@ -328,9 +328,9 @@ impl State {
                 .map(|s| s.label)
                 .collect::<Vec<_>>();
             row.set_subtitle(&if active.is_empty() {
-                "Etkin kaynak yok".into()
+                crate::i18n::tr("explore.no_sources")
             } else {
-                format!("{} etkin kaynak · {}", active.len(), active.join(", "))
+                format!("{} · {}", active.len(), active.join(", "))
             });
         }
     }
@@ -472,52 +472,71 @@ impl State {
                 && cursors.values().any(|c| !c.exhausted && !c.failed),
         );
         self.more.set_sensitive(!busy);
-        let message = if cursors.is_empty() && !self.favorites.get() {
-            "Kaynak seçilmemiş. Ayarlar > Görsel kaynakları bölümünden bir koleksiyon aç.".into()
-        } else if !failures.is_empty() {
-            format!(
-                "{count} görsel · {} yanıt vermedi; diğer sonuçlar korunuyor",
-                failures.join(", ")
-            )
-        } else if busy {
-            format!("{count} görsel · Yükleniyor…")
-        } else if count >= MAX_RESULTS {
-            format!("{count} görsel · Bellek sınırına ulaşıldı; yeni arama başlatabilirsin")
-        } else if count == 0 {
-            "Sonuç yok. Kaynakları ve filtreleri kontrol et.".into()
-        } else if self.favorites.get() || cursors.values().all(|c| c.exhausted) {
-            format!("{count} görsel · Tüm sonuçlar yüklendi")
-        } else {
-            format!("{count} görsel · Devamı için aşağı kaydır")
-        };
         let cfg = self.config.borrow();
+        let active_sources = crate::registry::enabled(&cfg).len();
         self.empty.set_visible(count == 0);
         if let Some(scroll) = self.explore_scroll.upgrade() {
             scroll.set_visible(count > 0);
         }
-        self.empty.set_title(if busy {
-            "Kaynaklardan sonuç bekleniyor"
+        let empty_title = if busy {
+            crate::i18n::tr("common.downloading")
         } else if !failures.is_empty() {
-            "Kaynaklara erişilemedi"
+            crate::i18n::tr("common.failed")
         } else if self.favorites.get() {
-            "Eşleşen favori yok"
+            crate::i18n::tr("explore.no_favorites")
         } else {
-            "Eşleşen görsel yok"
-        });
+            crate::i18n::tr("explore.no_results")
+        };
+        self.empty.set_title(&empty_title);
         self.empty.set_description(Some(if busy {
             "İlk sonuçlar geldikçe galeri açılır. Diğer işler arka planda devam eder."
         } else {
             "Kaynakları ve içerik izinlerini kontrol et; sorguyu veya filtreleri değiştir."
         }));
         let rejected: usize = cursors.values().map(|c| c.rejected).sum();
-        let active_sources = crate::registry::enabled(&cfg).len();
         let active_filters = cfg.policy.active_filters();
-        let mut parts = vec![message, format!("{active_sources} kaynak")];
+        let status_text = if cursors.is_empty() && !self.favorites.get() {
+            crate::i18n::tr("explore.no_sources")
+        } else if !failures.is_empty() {
+            format!("{count} · {}", failures.join(", "))
+        } else if busy {
+            crate::i18n::tr_fmt(
+                "explore.status_line",
+                &[
+                    ("count", &count.to_string()),
+                    ("state", &crate::i18n::tr("common.downloading")),
+                    ("sources", &active_sources.to_string()),
+                ],
+            )
+        } else if count == 0 {
+            crate::i18n::tr("explore.no_results")
+        } else {
+            let state_txt = if count >= MAX_RESULTS
+                || self.favorites.get()
+                || cursors.values().all(|c| c.exhausted)
+            {
+                crate::i18n::tr("explore.all_loaded")
+            } else {
+                crate::i18n::tr("explore.load_more")
+            };
+            crate::i18n::tr_fmt(
+                "explore.status_line",
+                &[
+                    ("count", &count.to_string()),
+                    ("state", &state_txt),
+                    ("sources", &active_sources.to_string()),
+                ],
+            )
+        };
+        let mut parts = vec![status_text];
         if active_filters > 0 {
-            parts.push(format!("{active_filters} filtre"));
+            parts.push(format!(
+                "{active_filters} {}",
+                crate::i18n::tr("common.filter").to_lowercase()
+            ));
         }
         if rejected > 0 {
-            parts.push(format!("{rejected} elendi"));
+            parts.push(format!("{rejected}×"));
         }
         self.status.set_text(&parts.join(" · "));
     }
@@ -836,9 +855,12 @@ impl State {
                         zoom.set_sensitive(true);
                     }
                     if let Some(label) = target.label.upgrade() {
-                        label.set_text(&format!(
-                            "Özgün dosya · {} × {} piksel · Ekrana sığdırılıyor",
-                            dimensions.0, dimensions.1
+                        label.set_text(&crate::i18n::tr_fmt(
+                            "lightbox.status_fit",
+                            &[
+                                ("width", &dimensions.0.to_string()),
+                                ("height", &dimensions.1.to_string()),
+                            ],
                         ));
                     }
                 }
@@ -905,7 +927,7 @@ impl State {
                     .and_then(|scope| self.latest_apply.get().pending_scope(scope, id))
                 {
                     match apply(&path, scope) {
-                        Ok(()) => self.toast(wallpaper_applied(scope)),
+                        Ok(()) => self.toast(&wallpaper_applied(scope)),
                         Err(e) => self.toast(&format!("Uygulanamadı: {e}")),
                     }
                 } else {
@@ -1199,7 +1221,7 @@ impl State {
         apply(path, scope)?;
         self.mark_wallpaper_intent(scope, crate::queue::next_id());
         self.queue_changed();
-        self.toast(wallpaper_applied(scope));
+        self.toast(&wallpaper_applied(scope));
         Ok(())
     }
     fn download(self: &Rc<Self>, item: Wallpaper, target: Option<&str>) {
@@ -1303,11 +1325,11 @@ fn apply(path: &Path, scope: &str) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn wallpaper_applied(scope: &str) -> &'static str {
+fn wallpaper_applied(scope: &str) -> String {
     match scope {
-        "light" => "Açık temanın duvar kâğıdı ayarlandı.",
-        "dark" => "Koyu temanın duvar kâğıdı ayarlandı.",
-        _ => "İki temanın duvar kâğıdı ayarlandı.",
+        "light" => crate::i18n::tr("lightbox.toast_light_set"),
+        "dark" => crate::i18n::tr("lightbox.toast_dark_set"),
+        _ => crate::i18n::tr("lightbox.toast_both_set"),
     }
 }
 
@@ -1366,12 +1388,11 @@ fn preview(
     let title = adw::WindowTitle::new(&item.title, &item.provider);
     header.set_title_widget(Some(&title));
 
-    let zoom = gtk::ToggleButton::with_label("%100");
+    let zoom = gtk::ToggleButton::with_label("100%");
     zoom.set_sensitive(false);
-    zoom.set_tooltip_text(Some("Özgün piksel boyutu; kapalıyken ekrana sığdır"));
-    zoom.update_property(&[gtk::accessible::Property::Label(
-        "Özgün piksel boyutunda görüntüle",
-    )]);
+    let zoom_tip = crate::i18n::tr("lightbox.zoom_100");
+    zoom.set_tooltip_text(Some(&zoom_tip));
+    zoom.update_property(&[gtk::accessible::Property::Label(&zoom_tip)]);
 
     // Right-hand collapsible inspector drawer (OverlaySplitView) keeps 100% of height for the image!
     let split = adw::OverlaySplitView::builder()
@@ -1462,7 +1483,7 @@ fn preview(
     spinner.set_size_request(16, 16);
     spinner.start();
     loading_pill.append(&spinner);
-    let loading_lbl = gtk::Label::new(Some("Özgün çözünürlük yükleniyor…"));
+    let loading_lbl = gtk::Label::new(Some(&crate::i18n::tr("lightbox.loading_original")));
     loading_lbl.add_css_class("caption");
     loading_pill.append(&loading_lbl);
     overlay.add_overlay(&loading_pill);
@@ -1515,7 +1536,7 @@ fn preview(
     if let (Some((model, pos)), Some(nav)) = (&nav_source, &on_navigate) {
         if *pos > 0 {
             let prev_btn = gtk::Button::from_icon_name("go-previous-symbolic");
-            prev_btn.set_tooltip_text(Some("Önceki görsel (←)"));
+            prev_btn.set_tooltip_text(Some(&crate::i18n::tr("lightbox.prev_image")));
             prev_btn.add_css_class("circular");
             prev_btn.add_css_class("osd");
             prev_btn.add_css_class("duvar-nav-btn");
@@ -1528,7 +1549,7 @@ fn preview(
         }
         if *pos + 1 < model.n_items() {
             let next_btn = gtk::Button::from_icon_name("go-next-symbolic");
-            next_btn.set_tooltip_text(Some("Sonraki görsel (→)"));
+            next_btn.set_tooltip_text(Some(&crate::i18n::tr("lightbox.next_image")));
             next_btn.add_css_class("circular");
             next_btn.add_css_class("osd");
             next_btn.add_css_class("duvar-nav-btn");
@@ -1549,7 +1570,7 @@ fn preview(
     sidebar_box.set_margin_bottom(16);
     sidebar_box.set_margin_start(14);
     sidebar_box.set_margin_end(14);
-    let info_hdr = gtk::Label::new(Some("Görsel bilgileri"));
+    let info_hdr = gtk::Label::new(Some(&crate::i18n::tr("lightbox.info_title")));
     info_hdr.set_xalign(0.0);
     info_hdr.add_css_class("heading");
     sidebar_box.append(&info_hdr);
@@ -1571,20 +1592,18 @@ fn preview(
     let bottom = gtk::Box::new(gtk::Orientation::Vertical, 6);
     bottom.add_css_class("duvar-lightbox-bottom");
     let status_row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
-    let quality = gtk::Label::new(Some("Özgün dosya yükleniyor…"));
+    let quality = gtk::Label::new(Some(&crate::i18n::tr("lightbox.loading_original")));
     quality.set_hexpand(true);
     quality.set_xalign(0.0);
     quality.set_ellipsize(gtk::pango::EllipsizeMode::End);
     quality.add_css_class("caption");
     quality.add_css_class("dim-label");
     status_row.append(&quality);
-    let retry = gtk::Button::with_label("Yeniden yükle");
+    let retry = gtk::Button::with_label(&crate::i18n::tr("common.refresh"));
     retry.add_css_class("flat");
     retry.set_visible(false);
     status_row.append(&retry);
-    let hint = gtk::Label::new(Some(
-        "Tekerlek: yakınlaştır · Sürükle: kaydır · Sağ tık: menü",
-    ));
+    let hint = gtk::Label::new(Some(&crate::i18n::tr("lightbox.controls_hint")));
     hint.add_css_class("caption");
     hint.add_css_class("dim-label");
     status_row.append(&hint);
@@ -1607,14 +1626,24 @@ fn preview(
                 p.set_can_shrink(false);
                 sc.set_policy(gtk::PolicyType::Automatic, gtk::PolicyType::Automatic);
                 sc.set_cursor_from_name(Some("grab"));
-                q.set_text(&format!("Özgün dosya · {width} × {height} piksel · %100"));
+                q.set_text(&crate::i18n::tr_fmt(
+                    "lightbox.status_100",
+                    &[
+                        ("width", &width.to_string()),
+                        ("height", &height.to_string()),
+                    ],
+                ));
             } else {
                 p.set_size_request(-1, -1);
                 p.set_can_shrink(true);
                 sc.set_policy(gtk::PolicyType::Never, gtk::PolicyType::Never);
                 sc.set_cursor_from_name(None);
-                q.set_text(&format!(
-                    "Özgün dosya · {width} × {height} piksel · Ekrana sığdırılıyor"
+                q.set_text(&crate::i18n::tr_fmt(
+                    "lightbox.status_fit",
+                    &[
+                        ("width", &width.to_string()),
+                        ("height", &height.to_string()),
+                    ],
                 ));
             }
         });
@@ -1782,6 +1811,7 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
         .lookup("org.gnome.shell.extensions.duvar", false)
         .expect("Duvar schema");
     let settings = gio::Settings::new_full(&schema, None::<&gio::SettingsBackend>, None);
+    crate::i18n::init_from_settings(Some(&settings));
     let mut cfg: Config =
         serde_json::from_str(&settings.string("configuration")).unwrap_or_default();
     let config_error = match crate::store::load_config() {
@@ -1804,8 +1834,9 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
     let status = gtk::Label::new(None);
     status.add_css_class("dim-label");
     let spinner = gtk::Spinner::new();
+    let search_ph = crate::i18n::tr("explore.search_placeholder");
     let search = gtk::SearchEntry::builder()
-        .placeholder_text("Duvar kâğıdı ara…")
+        .placeholder_text(&search_ph)
         .text(&cfg.query)
         .hexpand(true)
         .build();
@@ -1903,19 +1934,19 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
     window.insert_action_group("wallpaper", Some(&wallpaper_actions));
 
     let explore = adw::PreferencesPage::builder()
-        .title("Keşfet")
+        .title(crate::i18n::tr("tabs.explore"))
         .icon_name("preferences-desktop-wallpaper-symbolic")
         .build();
     let downloaded = adw::PreferencesPage::builder()
-        .title("İndirilenler")
+        .title(crate::i18n::tr("tabs.downloads"))
         .icon_name("folder-download-symbolic")
         .build();
     let filters = adw::PreferencesPage::builder()
-        .title("Filtreler")
+        .title(crate::i18n::tr("tabs.filters"))
         .icon_name("duvar-filter-symbolic")
         .build();
     let settings_page = adw::PreferencesPage::builder()
-        .title("Ayarlar")
+        .title(crate::i18n::tr("tabs.settings"))
         .icon_name("preferences-system-symbolic")
         .build();
     state.filters_page.set(Some(&filters));
@@ -1929,21 +1960,24 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
     bar.add_css_class("duvar-toolbar-row");
     bar.append(&state.search);
 
-    let sort = gtk::DropDown::from_strings(&[
-        "Önerilen",
-        "En yeni",
-        "Çözünürlük",
-        "Yatay oran",
-        "Rastgele",
-    ]);
+    let sort_labels = [
+        crate::i18n::tr("explore.sort_recommended"),
+        crate::i18n::tr("explore.sort_latest"),
+        crate::i18n::tr("explore.sort_resolution"),
+        crate::i18n::tr("explore.sort_landscape"),
+        crate::i18n::tr("explore.sort_random"),
+    ];
+    let sort_refs: Vec<&str> = sort_labels.iter().map(String::as_str).collect();
+    let sort = gtk::DropDown::from_strings(&sort_refs);
     sort.set_selected(
         ["source", "newest", "resolution", "wide", "random"]
             .iter()
             .position(|x| *x == state.config.borrow().gallery_order)
             .unwrap_or(0) as u32,
     );
-    sort.update_property(&[gtk::accessible::Property::Label("Sıralama ölçütü")]);
-    sort.set_tooltip_text(Some("Sıralama ölçütü"));
+    let sort_tip = crate::i18n::tr("explore.sort_tooltip");
+    sort.update_property(&[gtk::accessible::Property::Label(&sort_tip)]);
+    sort.set_tooltip_text(Some(&sort_tip));
     let w = weak(&state);
     sort.connect_selected_notify(move |row| {
         if let Some(s) = w.upgrade() {
@@ -1958,7 +1992,7 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
     });
     bar.append(&sort);
 
-    let topics_button = gtk::Button::with_label("Kategoriler");
+    let topics_button = gtk::Button::with_label(&crate::i18n::tr("common.categories"));
     topics_button.set_valign(gtk::Align::Center);
     let w = weak(&state);
     topics_button.connect_clicked(move |_| {
@@ -1968,16 +2002,15 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
     });
     bar.append(&topics_button);
 
+    let fav_tip = crate::i18n::tr("explore.favorites_tooltip");
     let favorites = gtk::ToggleButton::builder()
         .icon_name("starred-symbolic")
-        .tooltip_text("Favoriler · en fazla 128 kayıt")
+        .tooltip_text(&fav_tip)
         .valign(gtk::Align::Center)
         .build();
     favorites.add_css_class("flat");
     favorites.add_css_class("duvar-icon-btn");
-    favorites.update_property(&[gtk::accessible::Property::Label(
-        "Favorileri göster (en fazla 128)",
-    )]);
+    favorites.update_property(&[gtk::accessible::Property::Label(&fav_tip)]);
     let w = weak(&state);
     favorites.connect_toggled(move |b| {
         if b.is_active() {
@@ -2088,10 +2121,8 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
 
     // ── İNDİRİLENLER: Proper Adwaita header suffix + crisp grid + collapsible queue ──
     let collection = adw::PreferencesGroup::builder()
-        .title("İndirilen görseller")
-        .description(
-            "Cihazındaki yerel duvar kâğıtları. Etkin içerik izinleri burada da geçerlidir.",
-        )
+        .title(crate::i18n::tr("downloads.title"))
+        .description(crate::i18n::tr("downloads.subtitle"))
         .build();
     let header_box = gtk::Box::new(gtk::Orientation::Horizontal, 8);
     state.library_summary.set_valign(gtk::Align::Center);
@@ -2100,7 +2131,7 @@ pub fn populate(window: &adw::PreferencesWindow, directory: &Path) {
     header_box.append(&state.library_summary);
     let reload = gtk::Button::builder()
         .icon_name("view-refresh-symbolic")
-        .tooltip_text("İndirilenleri yenile")
+        .tooltip_text(crate::i18n::tr("downloads.refresh_downloads"))
         .valign(gtk::Align::Center)
         .build();
     reload.add_css_class("flat");

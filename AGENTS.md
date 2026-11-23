@@ -27,12 +27,22 @@ duvar/
 ├── Cargo.lock                  # Locked dependency graph (--locked --offline)
 ├── AGENTS.md                   # This file
 ├── CHANGELOG.md                # Release history
-├── README.md                   # Project showcase & quick start
+├── README.md                   # English project showcase (default GitHub landing page)
+├── README.tr.md                # Turkish project showcase
 ├── LICENSE                     # GPL-3.0-or-later
+│
+├── locales/                    # Single-source-of-truth 10-language i18n catalog (default: tr)
+│   ├── README.md               # Translator & AI localization guide
+│   ├── CONTEXT.md              # Key-by-key map of screen, file, widget & placeholders
+│   └── {tr,en,es,de,fr,pt,ru,ja,zh,ar}.json
+│
+├── scripts/                    # Optional user convenience tooling
+│   └── setup-recommended-desktop.sh  # Recommended 5-extension GNOME 51 bundle + dynamic presets
 │
 ├── extension/                  # GNOME Shell extension payload
 │   ├── metadata.json           # Extension UUID, shell-version, version & version-name
 │   ├── extension.js            # Shell lifecycle, theme application, top-bar capsule observer
+│   ├── i18n.js                 # Shared GJS localization loader reading locales/*.json
 │   ├── palette.js              # OKLab palette generator, CSS templates (Shell/GTK/Adw/BMS)
 │   ├── palette-worker.js       # Isolated GJS subprocess for image decoding & OKLab clustering
 │   ├── palette-prefs.js        # "Renkler" preferences page + live top-bar preview cards
@@ -46,6 +56,7 @@ duvar/
 │
 ├── src/                        # Rust native library (duvar_native) & tooling
 │   ├── lib.rs                  # C ABI entry points: duvar_populate, duvar_version
+│   ├── i18n.rs                 # Compile-time embedded 10-language catalog + parity tests
 │   ├── model.rs                # Config, Policy, Rating, Item, Sort, Filter types & defaults
 │   ├── registry.rs             # Declarative capabilities & contracts for all 12 sources
 │   ├── sources.rs              # Provider query builders & JSON response parsers

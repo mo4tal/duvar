@@ -5,8 +5,9 @@ out="$root/dist/store"
 mkdir -p "$out"
 stage=$(mktemp -d)
 trap 'rm -rf -- "$stage"' EXIT
-mkdir -p "$stage/schemas" "$stage/icons/hicolor/scalable/apps" "$stage/icons/hicolor/symbolic/apps"
-cp "$root"/extension/{extension.js,palette.js,palette-worker.js,palette-prefs.js} "$stage/"
+mkdir -p "$stage/schemas" "$stage/locales" "$stage/icons/hicolor/scalable/apps" "$stage/icons/hicolor/symbolic/apps"
+cp "$root"/extension/{extension.js,palette.js,palette-worker.js,palette-prefs.js,i18n.js} "$stage/"
+cp "$root"/locales/*.json "$stage/locales/"
 cp "$root"/extension/schemas/*.xml "$stage/schemas/"
 cp "$root"/extension/icons/hicolor/index.theme "$stage/icons/hicolor/"
 cp "$root"/extension/icons/hicolor/scalable/apps/io.github.mo4tal.Duvar.svg "$stage/icons/hicolor/scalable/apps/"
@@ -29,6 +30,7 @@ Path(sys.argv[2]).write_text(json.dumps(metadata, ensure_ascii=False, indent=2) 
 PY
 glib-compile-schemas --strict --dry-run "$stage/schemas"
 gnome-extensions pack --force --out-dir "$out" \
-    --extra-source=LICENSE --extra-source=icons --extra-source=palette.js --extra-source=palette-worker.js \
+    --extra-source=LICENSE --extra-source=icons --extra-source=locales --extra-source=i18n.js \
+    --extra-source=palette.js --extra-source=palette-worker.js \
     --extra-source=palette-prefs.js --extra-source=user-theme-policy.js "$stage"
 printf '%s\n' "$out/duvar@mo4tal.github.io.shell-extension.zip"

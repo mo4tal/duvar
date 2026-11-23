@@ -1,6 +1,7 @@
 <schemalist>
  <schema id="org.gnome.shell.extensions.duvar" path="/org/gnome/shell/extensions/duvar/">
   <key name="configuration" type="s"><default>'{}'</default><summary>Gallery preferences and favorites; API keys are never stored here.</summary></key>
+  <key name="ui-language" type="s"><default>'tr'</default><summary>Interface language code (tr default; en, es, de, fr, pt, ru, ja, zh, ar).</summary></key>
   <key name="palette-enabled" type="b"><default>false</default><summary>Apply the staged wallpaper palette.</summary></key>
   <key name="palette-follow" type="b"><default>true</default><summary>Analyze new desktop wallpapers while Duvar colors are enabled.</summary></key>
   <key name="palette-gtk" type="b"><default>true</default><summary>Also select the GTK theme when Duvar colors are enabled.</summary></key>

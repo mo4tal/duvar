@@ -8,8 +8,9 @@ import {
     normalizePanelOptions, paletteRevision, profiles, validAnalysis,
     validColors, validHues, wallpaperPair,
 } from './palette.js';
+import {createI18n} from './i18n.js';
 
-function previewCard(modeClass, heading) {
+function previewCard(modeClass, heading, t) {
     const card = new Gtk.Box({
         orientation: Gtk.Orientation.VERTICAL,
         spacing: 10,
@@ -54,7 +55,7 @@ function previewCard(modeClass, heading) {
         css_classes: ['duvar-preview-title'],
     }));
     head.append(new Gtk.Label({
-        label: 'Etkin',
+        label: t('common.active'),
         valign: Gtk.Align.CENTER,
         css_classes: ['duvar-preview-pill', 'duvar-preview-accent'],
     }));
@@ -63,10 +64,10 @@ function previewCard(modeClass, heading) {
         spacing: 2,
         css_classes: ['duvar-preview-inner'],
     });
-    inner.append(new Gtk.Label({label: 'Kart', xalign: 0, css_classes: ['duvar-preview-text']}));
-    inner.append(new Gtk.Label({label: 'İkincil', xalign: 0, css_classes: ['duvar-preview-secondary']}));
+    inner.append(new Gtk.Label({label: t('colors.card_label'), xalign: 0, css_classes: ['duvar-preview-text']}));
+    inner.append(new Gtk.Label({label: t('colors.card_secondary'), xalign: 0, css_classes: ['duvar-preview-secondary']}));
     const chips = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL, spacing: 6, homogeneous: true});
-    for (const [label, role] of [['Pasif', 'passive'], ['Seçim', 'selected'], ['Odak', 'focus']]) {
+    for (const [label, role] of [[t('colors.chip_passive'), 'passive'], [t('colors.chip_selected'), 'selected'], [t('colors.chip_focus'), 'focus']]) {
         chips.append(new Gtk.Label({
             label,
             xalign: 0.5,
@@ -153,13 +154,15 @@ function localFileExists(uri) {
 }
 
 export function addPalettePage(window, settings, path, addWallpaperAction = null) {
+    const i18n = createI18n(path, settings);
+    const t = i18n.t;
     const bg = new Gio.Settings({schema_id: 'org.gnome.desktop.background'});
     const desktop = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
     const schema = settings.settings_schema;
     const hasPanelStyle = Boolean(schema?.has_key('palette-panel-style'));
     const hasCapsuleStrength = Boolean(schema?.has_key('palette-panel-capsule-strength'));
 
-    const page = new Adw.PreferencesPage({title: 'Renkler', icon_name: 'applications-graphics-symbolic'});
+    const page = new Adw.PreferencesPage({title: t('tabs.colors'), icon_name: 'applications-graphics-symbolic'});
     const subscriptions = [];
     const watch = (source, key, callback) =>
         subscriptions.push([source, source.connect(`changed::${key}`, callback)]);
@@ -172,19 +175,20 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
 
     // 1. Primary activation & live status
     const group = new Adw.PreferencesGroup({
-        title: 'Duvar kâğıdından tema',
-        description: 'Açık ve koyu duvar kâğıtlarından GNOME Shell, üst panel ve uygulamalar için canlı renk üretir.',
+        title: t('colors.group_theme_title'),
+        description: t('colors.group_theme_desc'),
     });
     const active = new Adw.SwitchRow({
-        title: 'Duvar temasını kullan',
-        subtitle: 'User Themes olmadan da çalışır; başka bir Shell tema yöneticisiyle birlikte kullanma.',
+        title: t('colors.enable_title'),
+        subtitle: t('colors.enable_desc'),
     });
     settings.bind('palette-enabled', active, 'active', Gio.SettingsBindFlags.DEFAULT);
-    const status = new Adw.ActionRow({title: 'Tema durumu'});
+    const status = new Adw.ActionRow({title: t('colors.status_title')});
     status.add_prefix(new Gtk.Image({icon_name: 'emblem-default-symbolic', css_classes: ['dim-label']}));
     const updateStatus = () => {
         const txt = settings.get_string('palette-status');
-        status.subtitle = txt || (settings.get_boolean('palette-enabled') ? 'Etkin' : 'Kapalı');
+        const label = txt || (settings.get_boolean('palette-enabled') ? t('common.active') : t('common.off'));
+        status.subtitle = GLib.markup_escape_text(label, -1);
     };
     updateStatus();
     watch(settings, 'palette-status', updateStatus);
@@ -194,27 +198,27 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
     page.add(group);
 
     // 2. Live Visual Preview (Light + Dark side-by-side with top-panel capsule preview)
-    const preview = new Adw.PreferencesGroup({title: 'Önizleme', visible: false});
+    const preview = new Adw.PreferencesGroup({title: t('colors.preview_title'), visible: false});
     const swatches = new Gtk.Box({spacing: 12, homogeneous: true});
-    swatches.append(previewCard('duvar-preview-light', 'Açık görünüm'));
-    swatches.append(previewCard('duvar-preview-dark', 'Koyu görünüm'));
+    swatches.append(previewCard('duvar-preview-light', t('colors.light_preview'), t));
+    swatches.append(previewCard('duvar-preview-dark', t('colors.dark_preview'), t));
     preview.add(swatches);
     page.add(preview);
 
     // 3. Top Panel & Floating Glass Capsules (instant live switching in both light & dark modes)
     const panelGroup = new Adw.PreferencesGroup({
-        title: 'Üst panel ve kapsül görünümü',
-        description: 'Hem açık hem koyu temada üst panel öğelerinin okunabilirlik stilini anlık olarak seç.',
+        title: t('colors.panel_group_title'),
+        description: t('colors.panel_group_desc'),
     });
     const panelStyleRow = new Adw.ComboRow({
-        title: 'Üst panel stili',
-        model: Gtk.StringList.new(PANEL_STYLES.map(([, label]) => label)),
+        title: t('colors.panel_style_title'),
+        model: Gtk.StringList.new(PANEL_STYLES.map(([id]) => t(`colors.style_${id}`))),
         subtitle_lines: 2,
         sensitive: hasPanelStyle,
     });
     const capsuleStrengthRow = new Adw.ComboRow({
-        title: 'Kapsül cam yoğunluğu',
-        model: Gtk.StringList.new(CAPSULE_STRENGTHS.map(([, label]) => label)),
+        title: t('colors.capsule_strength_title'),
+        model: Gtk.StringList.new(CAPSULE_STRENGTHS.map(([id]) => t(`colors.strength_${id}`))),
         subtitle_lines: 2,
         sensitive: hasCapsuleStrength,
     });
@@ -223,73 +227,72 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
     page.add(panelGroup);
 
     // 4. Palette Character Selection
-    const draft = new Adw.PreferencesGroup({title: 'Renk karakteri', description: 'Görseller inceleniyor…'});
-    const model = Gtk.StringList.new(profiles.map(p => p[0]));
-    const pick = new Adw.ComboRow({title: 'Palet', model, subtitle_lines: 2});
+    const draft = new Adw.PreferencesGroup({title: t('colors.character_group_title'), description: t('colors.analyzing')});
+    const model = Gtk.StringList.new(profiles.map((_, idx) => t(`colors.profile_${idx}_name`)));
+    const pick = new Adw.ComboRow({title: t('colors.palette_row'), model, subtitle_lines: 2});
     const apply = new Adw.ButtonRow({
-        title: 'Seçili paleti kaydet',
+        title: t('colors.save_palette'),
         start_icon_name: 'emblem-ok-symbolic',
         sensitive: false,
         css_classes: ['suggested-action'],
     });
-    const prepare = new Adw.ButtonRow({title: '10 paleti hazırla', start_icon_name: 'view-refresh-symbolic'});
+    const prepare = new Adw.ButtonRow({title: t('colors.prepare_palettes'), start_icon_name: 'view-refresh-symbolic'});
     for (const row of [pick, apply, prepare]) draft.add(row);
     page.add(draft);
 
     // 5. Active Light & Dark Wallpapers
     const backgrounds = new Adw.PreferencesGroup({
-        title: 'Duvar kâğıtları',
-        description: addWallpaperAction ? 'Her düğme yalnızca adını taşıdığı temanın görselini değiştirir.' :
-            'Keşfet veya İndirilenler sekmelerinden açık ve koyu duvar kâğıtlarını doğrudan atayabilirsin.',
+        title: t('colors.wallpapers_group'),
+        description: addWallpaperAction ? t('colors.wallpapers_desc_gallery') : t('colors.wallpapers_desc_store'),
     });
     const mode = () => desktop.get_string('color-scheme') === 'prefer-dark' ? 'dark' : 'light';
     for (const [targetMode, key, title, icon] of [
-        ['light', 'picture-uri', 'Açık tema', 'weather-clear-symbolic'],
-        ['dark', 'picture-uri-dark', 'Koyu tema', 'weather-clear-night-symbolic'],
+        ['light', 'picture-uri', t('colors.light_theme'), 'weather-clear-symbolic'],
+        ['dark', 'picture-uri-dark', t('colors.dark_theme'), 'weather-clear-night-symbolic'],
     ]) {
         const row = new Adw.ActionRow({title, subtitle_lines: 1});
         row.add_prefix(new Gtk.Image({icon_name: icon}));
-        const badge = new Gtk.Label({label: 'Etkin', valign: Gtk.Align.CENTER, css_classes: ['caption', 'accent']});
+        const badge = new Gtk.Label({label: t('common.active'), valign: Gtk.Align.CENTER, css_classes: ['caption', 'accent']});
         row.add_suffix(badge);
         const update = () => {
             const uri = bg.get_string(key);
-            row.subtitle = GLib.markup_escape_text(uri ? Gio.File.new_for_uri(uri).get_basename() ?? 'Görsel yok' : 'Görsel yok', -1);
+            row.subtitle = GLib.markup_escape_text(uri ? Gio.File.new_for_uri(uri).get_basename() ?? t('colors.no_image') : t('colors.no_image'), -1);
             badge.visible = mode() === targetMode;
         };
         update();
         watch(bg, key, update);
         watch(desktop, 'color-scheme', update);
         backgrounds.add(row);
-        addWallpaperAction?.(backgrounds, window, settings, targetMode, title, () => closed);
+        addWallpaperAction?.(backgrounds, window, settings, targetMode, title, () => closed, t);
     }
     page.add(backgrounds);
 
     // 6. Application Layers & Automation
     const follow = new Adw.SwitchRow({
-        title: 'Duvar kâğıdı değişince renkleri güncelle',
-        subtitle: 'Yeni görsel seçildiğinde mevcut palet karakteriyle renkleri otomatik yeniler.',
+        title: t('colors.follow_title'),
+        subtitle: t('colors.follow_desc'),
     });
     settings.bind('palette-follow', follow, 'active', Gio.SettingsBindFlags.DEFAULT);
     const gtkTheme = new Adw.SwitchRow({
-        title: 'GTK uygulamalarını da renklendir',
-        subtitle: 'GTK 3 ve klasik GTK 4 uygulamalarına uyumlu palet uygular.',
+        title: t('colors.gtk_title'),
+        subtitle: t('colors.gtk_desc'),
     });
     settings.bind('palette-gtk', gtkTheme, 'active', Gio.SettingsBindFlags.DEFAULT);
     const adwaita = new Adw.SwitchRow({
-        title: 'Libadwaita uygulamalarını renklendir',
-        subtitle: 'GTK 4.12+ · Kullanıcı CSS’sine geri alınabilir bir bağlantı ekler.',
+        title: t('colors.adwaita_title'),
+        subtitle: t('colors.adwaita_desc'),
         sensitive: Gtk.check_version(4, 12, 0) === null,
     });
     settings.bind('palette-adwaita', adwaita, 'active', Gio.SettingsBindFlags.DEFAULT);
     const refresh = new Adw.SwitchRow({
-        title: 'Açık libadwaita pencerelerini yenile',
-        subtitle: 'Yüksek kontrastı anlık açıp kapatarak açık pencereleri tazeler.',
+        title: t('colors.adwaita_refresh_title'),
+        subtitle: t('colors.adwaita_refresh_desc'),
     });
     settings.bind('palette-adwaita-refresh', refresh, 'active', Gio.SettingsBindFlags.DEFAULT);
     settings.bind('palette-adwaita', refresh, 'sensitive', Gio.SettingsBindFlags.GET);
     const options = new Adw.PreferencesGroup({
-        title: 'Uygulama katmanları ve takip',
-        description: 'Renklerin hangi masaüstü katmanlarına yansıtılacağını belirle.',
+        title: t('colors.layers_group_title'),
+        description: t('colors.layers_group_desc'),
     });
     for (const row of [follow, gtkTheme, adwaita, refresh]) options.add(row);
     page.add(options);
@@ -315,9 +318,9 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
             const styleIdx = Math.max(0, PANEL_STYLES.findIndex(([id]) => id === panelStyle));
             const strengthIdx = Math.max(0, CAPSULE_STRENGTHS.findIndex(([id]) => id === capsuleStrength));
             if (panelStyleRow.selected !== styleIdx) panelStyleRow.selected = styleIdx;
-            panelStyleRow.subtitle = PANEL_STYLES[styleIdx]?.[2] ?? '';
+            panelStyleRow.subtitle = t(`colors.style_${PANEL_STYLES[styleIdx]?.[0] ?? 'capsule'}_desc`);
             if (capsuleStrengthRow.selected !== strengthIdx) capsuleStrengthRow.selected = strengthIdx;
-            capsuleStrengthRow.subtitle = CAPSULE_STRENGTHS[strengthIdx]?.[2] ?? '';
+            capsuleStrengthRow.subtitle = t(`colors.strength_${CAPSULE_STRENGTHS[strengthIdx]?.[0] ?? 'balanced'}_desc`);
             capsuleStrengthRow.sensitive = hasCapsuleStrength && (panelStyle === 'capsule' || panelStyle === 'smart');
         } finally {
             syncingPanelUi = false;
@@ -328,8 +331,8 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
         const i = pick.selected;
         const pair = analysis && i < profiles.length ? [colors(analysis[0], i, false), colors(analysis[1], i, true)] :
             [saved?.light, saved?.dark];
-        preview.title = analysis ? 'Önizleme' : 'Son kayıt';
-        pick.subtitle = profiles[i]?.[1] ?? '';
+        preview.title = analysis ? t('colors.preview_title') : t('colors.last_saved');
+        pick.subtitle = i < profiles.length ? t(`colors.profile_${i}_desc`) : '';
         pick.sensitive = Boolean(analysis);
         apply.sensitive = Boolean(analysis && i < profiles.length &&
             (!samePair(saved?.wallpapers) || saved.revision !== paletteRevision || i !== saved.profile ||
@@ -355,7 +358,7 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
         }
         prepare.sensitive = false;
         showPreview();
-        draft.description = 'Açık ve koyu görseller inceleniyor…';
+        draft.description = t('colors.analyzing');
         timeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 12, () => {
             timeout = 0;
             proc?.force_exit();
@@ -406,9 +409,9 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
             analysis = validAnalysis(saved.analysis) ? saved.analysis : saved.hues;
             snapshot = saved.wallpapers;
         }
-        draft.description = proc ? 'Açık ve koyu görseller inceleniyor…' : analysis ?
-            'Üstteki açık ve koyu önizlemeleri karşılaştırıp istediğin karakteri kaydet.' :
-            'Bu duvar kâğıtlarına ait renkleri görmek için paletleri hazırla.';
+        draft.description = proc ? t('colors.analyzing') : analysis ?
+            t('colors.compare_prompt') :
+            t('colors.prepare_prompt');
         syncPanelControls();
         showPreview();
         if (window.get_mapped())
@@ -465,7 +468,7 @@ export function addPalettePage(window, settings, path, addWallpaperAction = null
             return;
         }
         sync();
-        window.add_toast(new Adw.Toast({title: active.active ? 'Renk karakteri kaydedildi.' : 'Karakter kaydedildi. Kullanmak için Duvar temasını aç.'}));
+        window.add_toast(new Adw.Toast({title: active.active ? t('colors.toast_saved') : t('colors.toast_saved_enable')}));
     });
 
     window.add(page);

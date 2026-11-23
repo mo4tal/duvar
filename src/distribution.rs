@@ -17,6 +17,7 @@ pub const PAYLOAD_FILES: &[&str] = &[
     "palette.js",
     "palette-worker.js",
     "palette-prefs.js",
+    "i18n.js",
     "user-theme-policy.js",
     "gallery-wallpaper.js",
     "setup-palette.sh",
@@ -29,6 +30,16 @@ pub const PAYLOAD_FILES: &[&str] = &[
     "icons/hicolor/scalable/actions/duvar-filter-symbolic.svg",
     "icons/hicolor/scalable/apps/io.github.mo4tal.Duvar.svg",
     "icons/hicolor/symbolic/apps/io.github.mo4tal.Duvar-symbolic.svg",
+    "locales/tr.json",
+    "locales/en.json",
+    "locales/es.json",
+    "locales/de.json",
+    "locales/fr.json",
+    "locales/pt.json",
+    "locales/ru.json",
+    "locales/ja.json",
+    "locales/zh.json",
+    "locales/ar.json",
 ];
 pub fn sha(path: &Path) -> Result<String> {
     use sha2::{Digest, Sha256};

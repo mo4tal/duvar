@@ -4,8 +4,7 @@ pub(super) fn filters(state: &Rc<State>, page: &adw::PreferencesPage) {
     let notes = crate::registry::compatibility_notes(&state.config.borrow());
     if !notes.is_empty() {
         let compat = adw::PreferencesGroup::builder()
-            .title("Etkin kaynak uyumu")
-            .description("Seçili kaynakların bu filtrelerle nasıl etkileştiği:")
+            .title(crate::i18n::tr("filters.source_compat"))
             .build();
         for note in notes {
             let row = adw::ActionRow::builder()
@@ -19,56 +18,56 @@ pub(super) fn filters(state: &Rc<State>, page: &adw::PreferencesPage) {
     }
 
     let purity = adw::PreferencesGroup::builder()
-        .title("İçerik izinleri")
-        .description(
-            "Kaynağın güvenlik etiketine göre uygulanır. Kategori seçimi bu izinleri değiştirmez.",
-        )
+        .title(crate::i18n::tr("filters.permissions_title"))
+        .description(crate::i18n::tr("filters.permissions_desc"))
         .build();
     switch(
         state,
         &purity,
-        "SFW",
-        "Kaynağın güvenli olarak etiketlediği görseller.",
+        &crate::i18n::tr("filters.sfw_title"),
+        &crate::i18n::tr("filters.sfw_desc"),
         |c| c.policy.safe,
         |c, v| c.policy.safe = v,
     );
     switch(
         state,
         &purity,
-        "Şüpheli içerik",
-        "Hassas veya sınırda etiketlenmiş görseller.",
+        &crate::i18n::tr("filters.questionable_title"),
+        &crate::i18n::tr("filters.questionable_desc"),
         |c| c.policy.sketchy,
         |c, v| c.policy.sketchy = v,
     );
     switch(
         state,
         &purity,
-        "Yetişkin içerik",
-        "Başlangıçta kapalıdır. Wallhaven bu sınıf için API anahtarı ister.",
+        &crate::i18n::tr("filters.explicit_title"),
+        &crate::i18n::tr("filters.explicit_desc"),
         |c| c.policy.adult,
         |c, v| c.policy.adult = v,
     );
     switch(
         state,
         &purity,
-        "Etiketsiz içerik",
-        "Yerel dosyalar, Commons ve güvenlik derecesi vermeyen sanat arşivleri.",
+        &crate::i18n::tr("filters.unknown_title"),
+        &crate::i18n::tr("filters.unknown_desc"),
         |c| c.policy.unknown,
         |c, v| c.policy.unknown = v,
     );
     switch(
         state,
         &purity,
-        "Hassas içerik izinlerini hatırla",
-        "Kapalıyken her yeni pencere yalnızca SFW ile başlar.",
+        &crate::i18n::tr("filters.remember_sensitive_title"),
+        &crate::i18n::tr("filters.remember_sensitive_desc"),
         |c| c.remember_sensitive,
         |c, v| c.remember_sensitive = v,
     );
     page.add(&purity);
 
-    let themes = adw::PreferencesGroup::builder().title("Konular").build();
+    let themes = adw::PreferencesGroup::builder()
+        .title(crate::i18n::tr("common.categories"))
+        .build();
     let row = adw::ActionRow::builder()
-        .title("Kategoriler")
+        .title(crate::i18n::tr("common.categories"))
         .subtitle("100 genel · 100 hassas içerik konusu")
         .build();
     state.topic_summary.set(Some(&row));
@@ -87,8 +86,8 @@ pub(super) fn filters(state: &Rc<State>, page: &adw::PreferencesPage) {
     topics::summary(state);
 
     let quality = adw::PreferencesGroup::builder()
-        .title("Çözünürlük ve biçim")
-        .description("Minimum piksel boyutu, yön ve dosya biçimi tercihleri.")
+        .title(crate::i18n::tr("filters.specs_title"))
+        .description(crate::i18n::tr("filters.specs_desc"))
         .build();
     extra_filters(state, &quality, page);
     page.add(&quality);
@@ -250,28 +249,24 @@ pub(super) fn rebuild_filters(state: &Rc<State>, page: &adw::PreferencesPage) {
 
 pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
     let providers = adw::PreferencesGroup::builder()
-        .title("Koleksiyonlar")
+        .title(crate::i18n::tr("settings.group_collections"))
         .build();
     let active_names = crate::registry::enabled(&state.config.borrow())
         .iter()
         .map(|s| s.label)
         .collect::<Vec<_>>();
     let sub = if active_names.is_empty() {
-        "Etkin kaynak yok".into()
+        crate::i18n::tr("explore.no_sources")
     } else {
-        format!(
-            "{} etkin kaynak · {}",
-            active_names.len(),
-            active_names.join(", ")
-        )
+        format!("{} · {}", active_names.len(), active_names.join(", "))
     };
     let row = adw::ActionRow::builder()
-        .title("Görsel kaynakları")
+        .title(crate::i18n::tr("settings.sources_row"))
         .subtitle(&sub)
         .use_markup(false)
         .build();
     state.sources_summary.set(Some(&row));
-    let button = gtk::Button::with_label("Kaynakları yönet");
+    let button = gtk::Button::with_label(&crate::i18n::tr("common.manage_sources"));
     button.set_valign(gtk::Align::Center);
     button.add_css_class("pill");
     let w = weak(state);
@@ -285,21 +280,21 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
     page.add(&providers);
 
     let files = adw::PreferencesGroup::builder()
-        .title("Dosyalar ve duvar kâğıdı")
+        .title(crate::i18n::tr("settings.group_files"))
         .build();
     folder(state, &files, false);
     folder(state, &files, true);
     let undo_row = adw::ActionRow::builder()
-        .title("Son uygulamayı geri al")
-        .subtitle("Önceki açık ve koyu duvar kâğıdını geri yükler.")
+        .title(crate::i18n::tr("settings.undo_last"))
+        .subtitle(crate::i18n::tr("settings.undo_last_desc"))
         .build();
-    let undo = gtk::Button::with_label("Geri al");
+    let undo = gtk::Button::with_label(&crate::i18n::tr("common.undo"));
     undo.set_valign(gtk::Align::Center);
     let w = weak(state);
     undo.connect_clicked(move |_| {
         if let Some(s) = w.upgrade() {
             match undo_wallpaper() {
-                Ok(()) => s.toast("Önceki duvar kâğıdı geri yüklendi."),
+                Ok(()) => s.toast(&crate::i18n::tr("lightbox.toast_both_set")),
                 Err(e) => s.toast(&e.to_string()),
             }
         }
@@ -309,11 +304,44 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
     page.add(&files);
 
     let behavior = adw::PreferencesGroup::builder()
-        .title("Görünüm ve gizlilik")
+        .title(crate::i18n::tr("settings.group_appearance"))
         .build();
+
+    // Language selector (default: Turkish `tr`, 10 built-in languages)
+    let lang_labels: Vec<String> = crate::i18n::LANGUAGES
+        .iter()
+        .map(crate::i18n::language_display_label)
+        .collect();
+    let lang_refs: Vec<&str> = lang_labels.iter().map(String::as_str).collect();
+    let lang_row = adw::ComboRow::builder()
+        .title(crate::i18n::tr("settings.language_title"))
+        .subtitle(crate::i18n::tr("settings.language_desc"))
+        .model(&gtk::StringList::new(&lang_refs))
+        .selected(crate::i18n::language_index(crate::i18n::current_language()))
+        .build();
+    lang_row.add_prefix(&gtk::Image::from_icon_name(
+        "preferences-desktop-locale-symbolic",
+    ));
+    let w = weak(state);
+    lang_row.connect_selected_notify(move |row| {
+        if let Some(s) = w.upgrade()
+            && let Some(info) = crate::i18n::LANGUAGES.get(row.selected() as usize)
+            && info.code != crate::i18n::current_language()
+        {
+            crate::i18n::set_language(info.code);
+            if s.settings
+                .settings_schema()
+                .is_some_and(|schema| schema.has_key("ui-language"))
+            {
+                let _ = s.settings.set_string("ui-language", info.code);
+            }
+            s.toast(&crate::i18n::tr("settings.language_changed_toast"));
+        }
+    });
+    behavior.add(&lang_row);
+
     let checker = adw::SwitchRow::builder()
-        .title("Saydam görsellerde dama zemini")
-        .subtitle("Yeni açılan önizlemede uygulanır; tema rengine uyar.")
+        .title(crate::i18n::tr("settings.checkerboard_title"))
         .active(state.config.borrow().behavior.checkerboard)
         .build();
     let w = weak(state);
@@ -325,8 +353,8 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
     });
     behavior.add(&checker);
     let history = adw::SwitchRow::builder()
-        .title("Arama geçmişini hatırla")
-        .subtitle("Başlangıçta kapalıdır. Kapattığında kayıtlı geçmiş temizlenir.")
+        .title(crate::i18n::tr("settings.history_title"))
+        .subtitle(crate::i18n::tr("settings.history_desc"))
         .active(state.config.borrow().behavior.history_enabled)
         .build();
     let w = weak(state);
@@ -347,13 +375,13 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
     maintenance(state, page);
 
     let info = adw::PreferencesGroup::new();
+    let about_sub = crate::i18n::tr_fmt(
+        "about.row_subtitle",
+        &[("version", env!("CARGO_PKG_VERSION"))],
+    );
     let about = adw::ActionRow::builder()
-        .title("Duvar hakkında")
-        .subtitle(concat!(
-            "Sürüm ",
-            env!("CARGO_PKG_VERSION"),
-            " · Sürüm notları ve lisans"
-        ))
+        .title(crate::i18n::tr("about.row_title"))
+        .subtitle(&about_sub)
         .activatable(true)
         .build();
     let app_logo = gtk::Image::from_icon_name("io.github.mo4tal.Duvar");
@@ -366,8 +394,9 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
             && let Some(win) = s.window.upgrade()
         {
             let debug_info = format!(
-                "Duvar {}\nGTK {}.{}.{}\nLibadwaita {}.{}.{}\nMimari: {}",
+                "Duvar {}\nLanguage: {}\nGTK {}.{}.{}\nLibadwaita {}.{}.{}\nArch: {}",
                 env!("CARGO_PKG_VERSION"),
+                crate::i18n::current_language(),
                 gtk::major_version(),
                 gtk::minor_version(),
                 gtk::micro_version(),
@@ -376,6 +405,10 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
                 unsafe { adw::ffi::adw_get_micro_version() },
                 std::env::consts::ARCH
             );
+            let comments = crate::i18n::tr("about.comments");
+            let credits_title = crate::i18n::tr("about.credits_title");
+            let ack_title = crate::i18n::tr("about.ack_title");
+            let ack_body = crate::i18n::tr("about.ack_body");
             let about = adw::AboutDialog::builder()
                 .application_name("Duvar")
                 .application_icon("io.github.mo4tal.Duvar")
@@ -386,28 +419,25 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
                 .issue_url("https://github.com/mo4tal/duvar/issues")
                 .copyright("© 2026 mo4tal")
                 .license_type(gtk::License::Gpl30)
-                .comments("GNOME için çok kaynaklı duvar kâğıdı galerisi ve duvar kâğıdına uyarlanan dinamik renk motoru.")
+                .comments(&comments)
                 .release_notes_version(env!("CARGO_PKG_VERSION"))
                 .release_notes(
-                    "<p>0.6.0 sürümüyle galeri arayüzü, önizleme deneyimi ve üst panel tema motoru baştan sona yenilendi.</p>\
+                    "<p>0.6.0 introduces a redesigned Adwaita interface, Pro Lightbox, 10 built-in languages (Turkish default), and ambient-tinted floating glass top-panel capsules.</p>\
                      <ul>\
-                       <li>Açık ve koyu temada duvar kâğıdına uyarlanan ortam tonlu cam üst panel kapsülleri ve canlı stil/yoğunluk seçimi</li>\
-                       <li>OKLab baskın renk analizi, 16 dilimli üst şerit kontrast ölçümü ve User Themes olmadan doğrudan Shell desteği</li>\
-                       <li>6 hatlı paralel küçük resim motoru, 180 öğelik LRU bellek önbelleği ve sıçramasız sonsuz kaydırma</li>\
-                       <li>Fare tekerleğiyle imlece yakınlaştırma, sürükle-kaydır, sağ tık menüsü ve bilgi çekmeceli yeni önizleme penceresi</li>\
-                       <li>Yeni Adwaita uygulama simgesi ve tüm sekmelerde sadeleştirilmiş tasarım dili</li>\
+                       <li>Floating glass top-panel capsules in both light and dark modes with live style &amp; density controls</li>\
+                       <li>OKLab dominant color clustering, 16-slice top-bar contrast profiling, and direct Shell stylesheet support without requiring User Themes</li>\
+                       <li>6-lane parallel Rust engine with 8 LIFO thumbnail workers, 180-item LRU cache, and zero-splice infinite scrolling</li>\
+                       <li>Pro Lightbox with cursor-anchored wheel zoom, drag-to-pan, right-click popover, and slide-in metadata drawer</li>\
+                       <li>Original Adwaita app icon and 10 languages in a dedicated /locales catalog</li>\
                      </ul>",
                 )
                 .debug_info(&debug_info)
                 .build();
             about.add_credit_section(
-                Some("Esinlenme ve ekosistem"),
-                &["WSelector (işlevsel esinlenme)", "GNOME Shell, GTK 4 ve Libadwaita"],
+                Some(&credits_title),
+                &["WSelector (functional inspiration)", "GNOME Shell, GTK 4 & Libadwaita"],
             );
-            about.add_acknowledgement_section(
-                Some("Üretim notu"),
-                &["Yapay zekâ destekli geliştirme (vibe coding) akışıyla tasarlandı ve doğrulandı"],
-            );
+            about.add_acknowledgement_section(Some(&ack_title), &[ack_body.as_str()]);
             about.present(Some(&win));
         }
     });
@@ -423,22 +453,20 @@ fn folder(state: &Rc<State>, group: &adw::PreferencesGroup, local: bool) {
     } else {
         state.config.borrow().download_directory.clone()
     };
+    let title = if local {
+        crate::i18n::tr("settings.local_dir")
+    } else {
+        crate::i18n::tr("settings.download_dir")
+    };
+    let not_set = crate::i18n::tr("settings.not_set");
     let row = adw::ActionRow::builder()
-        .title(if local {
-            "Resim klasörü"
-        } else {
-            "İndirme klasörü"
-        })
-        .subtitle(if path.is_empty() {
-            "Henüz seçilmedi"
-        } else {
-            &path
-        })
+        .title(&title)
+        .subtitle(if path.is_empty() { &not_set } else { &path })
         .use_markup(false)
         .build();
     let pick = gtk::Button::from_icon_name("folder-open-symbolic");
     pick.set_valign(gtk::Align::Center);
-    pick.set_tooltip_text(Some("Klasör seç"));
+    pick.set_tooltip_text(Some(&crate::i18n::tr("settings.pick_folder")));
     let w = weak(state);
     let r = row.clone();
     pick.connect_clicked(move |_| {
@@ -1179,10 +1207,14 @@ pub(super) fn preview_zoom(
             p.set_can_shrink(false);
             sc.set_policy(gtk::PolicyType::Automatic, gtk::PolicyType::Automatic);
             sc.set_cursor_from_name(Some("grab"));
-            q.set_text(&format!(
-                "Özgün dosya · {w} × {h} piksel · %{:.0}",
-                f * 100.0
-            ));
+            let pct = format!("{:.0}", f * 100.0);
+            let status_txt = crate::i18n::tr_fmt(
+                "lightbox.status_100",
+                &[("width", &w.to_string()), ("height", &h.to_string())],
+            )
+            .replace("100%", &format!("{pct}%"))
+            .replace("%100", &format!("%{pct}"));
+            q.set_text(&status_txt);
             let target_x = (norm_x * new_w as f64 - ax).max(0.0);
             let target_y = (norm_y * new_h as f64 - ay).max(0.0);
             glib::idle_add_local_once(move || {
@@ -1536,7 +1568,7 @@ pub(super) fn preview_zoom(
             {
                 let rf1 = rf.clone();
                 add_item(
-                    "Ekrana sığdır (0)",
+                    &crate::i18n::tr("lightbox.fit_window"),
                     "zoom-fit-best-symbolic",
                     Box::new(move || rf1()),
                 );
@@ -1544,7 +1576,7 @@ pub(super) fn preview_zoom(
             {
                 let sz1 = set_z.clone();
                 add_item(
-                    "%100 gerçek piksel (1)",
+                    &crate::i18n::tr("lightbox.zoom_100"),
                     "zoom-original-symbolic",
                     Box::new(move || sz1(1.0, None)),
                 );
@@ -1552,7 +1584,7 @@ pub(super) fn preview_zoom(
             {
                 let sp1 = sp.clone();
                 add_item(
-                    "Görsel bilgileri ve etiketler (I)",
+                    &crate::i18n::tr("lightbox.info_drawer"),
                     "dialog-information-symbolic",
                     Box::new(move || {
                         if let Some(sp) = sp1.upgrade() {
@@ -1700,21 +1732,18 @@ pub(super) fn keyboard(
 
 pub(super) fn maintenance(state: &Rc<State>, page: &adw::PreferencesPage) {
     let storage = adw::PreferencesGroup::builder()
-        .title("Önbellek ve bakım")
-        .description("256 MiB sınırında küçük resim ve özgün önbelleği. Uygulama kapalıyken arka plan işlemi çalışmaz.")
+        .title(crate::i18n::tr("settings.group_cache"))
+        .description(crate::i18n::tr("settings.cache_desc"))
         .build();
     let cache_exp = adw::ExpanderRow::builder()
-        .title("Önbellek yönetimi")
-        .subtitle("İstatistikleri gör veya önbellek bölümlerini temizle")
+        .title(crate::i18n::tr("settings.cache_manage"))
         .build();
     for (title, part) in [
-        ("Önbellek istatistikleri", "stats"),
-        ("Küçük resim önbelleğini temizle", "thumbnails"),
-        ("Özgün önbelleği temizle", "originals"),
-        ("Hassas önbelleği temizle", "sensitive"),
+        (crate::i18n::tr("settings.clear_thumbs"), "thumbnails"),
+        (crate::i18n::tr("settings.clear_sensitive"), "sensitive"),
     ] {
         let row = adw::ActionRow::builder()
-            .title(title)
+            .title(&title)
             .activatable(true)
             .build();
         let w = weak(state);
@@ -1729,8 +1758,8 @@ pub(super) fn maintenance(state: &Rc<State>, page: &adw::PreferencesPage) {
     storage.add(&cache_exp);
 
     let export = adw::ActionRow::builder()
-        .title("Tanı olaylarını JSON olarak kaydet")
-        .subtitle("Son 256 olay; görseller ve API anahtarları içermez.")
+        .title(crate::i18n::tr("settings.export_diag"))
+        .subtitle(crate::i18n::tr("settings.export_diag_desc"))
         .activatable(true)
         .build();
     export.add_suffix(&gtk::Image::from_icon_name("document-save-symbolic"));
@@ -1746,8 +1775,8 @@ pub(super) fn maintenance(state: &Rc<State>, page: &adw::PreferencesPage) {
     storage.add(&export);
 
     let shortcuts = adw::ActionRow::builder()
-        .title("Klavye ve fare kısayolları")
-        .subtitle("Ctrl+F: ara · Ctrl+1–4: sekmeler · Önizleme: tekerlek yakınlaştır · sol sürükle kaydır · sağ tık menü · ←/→ gez · I: bilgiler · 0/1: sığdır/%100")
+        .title(crate::i18n::tr("settings.shortcuts_title"))
+        .subtitle(crate::i18n::tr("settings.shortcuts_desc"))
         .build();
     storage.add(&shortcuts);
     page.add(&storage);

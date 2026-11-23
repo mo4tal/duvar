@@ -36,7 +36,7 @@ with tempfile.TemporaryDirectory(prefix='duvar-install-test-') as tmp:
     fresh_target=fresh/target.relative_to(data)
     assert sha(fresh_target/'native/libduvar_native.so')==json.loads((root/'dist/manifest.json').read_text())['library_sha256']
     for key,expected in {'palette-enabled':'false','palette-follow':'true','palette-gtk':'true',
-                         'palette-adwaita':'false','palette-adwaita-refresh':'false'}.items():
+                         'palette-adwaita':'false','palette-adwaita-refresh':'false','ui-language':"'tr'"}.items():
         actual=subprocess.check_output(['gsettings','--schemadir',str(fresh_target/'schemas'),
                                         'get','org.gnome.shell.extensions.duvar',key],
                                        env=dict(env,GSETTINGS_BACKEND='memory'),text=True).strip()
@@ -82,8 +82,10 @@ with tempfile.TemporaryDirectory(prefix='duvar-install-test-') as tmp:
         assert any(n.endswith('/Cargo.lock') for n in src.getnames())
         assert not any('/docs/0.5/' in n or '/.git/' in n or '/target/' in n for n in src.getnames())
     with zipfile.ZipFile(archive) as z:
-        for name in ('palette.js','palette-prefs.js','palette-worker.js','gallery-wallpaper.js','user-theme-policy.js','setup-palette.sh'):
+        for name in ('i18n.js','palette.js','palette-prefs.js','palette-worker.js','gallery-wallpaper.js','user-theme-policy.js','setup-palette.sh'):
             assert z.read(name)==(root/'extension'/name).read_bytes()
+        for lang in ('tr','en','es','de','fr','pt','ru','ja','zh','ar'):
+            assert z.read(f'locales/{lang}.json')==(root/'locales'/f'{lang}.json').read_bytes()
         assert not any(n.startswith('development/') or n.endswith(('.log','health.json','verification.json','preferences.json')) for n in z.namelist())
         assert 'third-party/index.json' in z.namelist()
     print(json.dumps(dict(atomic_install=True,rollback_integrity=True,autodiscovery_foreign_cwd=True,unicode_spaces=True,check_does_not_replace=True,invalid_package_preserves_install=True,corruption_rejected=True,wrong_architecture_rejected=True,wrong_shell_rejected=True,personal_data_preserved=True,portable_doctor=True,clean_sharing_archive=True,source_allowlist=True,bundle_hashes=True)))

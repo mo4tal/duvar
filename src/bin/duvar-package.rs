@@ -141,7 +141,7 @@ fn main() -> Result<()> {
     for rel in PAYLOAD_FILES {
         let input = if *rel == "native/libduvar_native.so" {
             library.clone()
-        } else if *rel == "LICENSE" {
+        } else if *rel == "LICENSE" || rel.starts_with("locales/") {
             root.join(rel)
         } else {
             root.join("extension").join(rel)
@@ -177,6 +177,7 @@ fn main() -> Result<()> {
             "--force",
             "--extra-source=native",
             "--extra-source=icons",
+            "--extra-source=locales",
             "--extra-source=LICENSE",
             "--extra-source=README.md",
             "--extra-source=third-party",
@@ -184,6 +185,7 @@ fn main() -> Result<()> {
             "--extra-source=palette-worker.js",
             "--extra-source=user-theme-policy.js",
             "--extra-source=palette-prefs.js",
+            "--extra-source=i18n.js",
             "--extra-source=gallery-wallpaper.js",
             "--extra-source=setup-palette.sh",
         ])
@@ -220,6 +222,10 @@ fn main() -> Result<()> {
         &root.join("integrations"),
         &source_root.join("integrations"),
     )?;
+    tree(&root.join("locales"), &source_root.join("locales"))?;
+    if root.join("scripts").is_dir() {
+        tree(&root.join("scripts"), &source_root.join("scripts"))?;
+    }
     for entry in fs::read_dir(root.join("tests"))? {
         let entry = entry?;
         if entry.file_type()?.is_file()
@@ -234,10 +240,12 @@ fn main() -> Result<()> {
             )?;
         }
     }
-    for entry in PAYLOAD_FILES
-        .iter()
-        .filter(|p| **p != "LICENSE" && !p.ends_with(".so") && !p.ends_with(".typelib"))
-    {
+    for entry in PAYLOAD_FILES.iter().filter(|p| {
+        **p != "LICENSE"
+            && !p.starts_with("locales/")
+            && !p.ends_with(".so")
+            && !p.ends_with(".typelib")
+    }) {
         copy(
             &root.join("extension").join(entry),
             &source_root.join("extension").join(entry),

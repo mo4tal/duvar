@@ -6,6 +6,7 @@ pub mod doctor;
 mod engine;
 pub mod errors;
 pub mod files;
+pub mod i18n;
 pub mod library;
 mod model;
 mod providers;

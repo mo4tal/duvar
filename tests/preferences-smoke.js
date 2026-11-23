@@ -37,7 +37,7 @@ app.connect('activate',()=>{app.hold();(async()=>{
   grid.emit('activate',0);await wait(()=>window.get_visible_dialog()!==null,'No preview');const preview=window.get_visible_dialog();
   await wait(()=>widgets(preview).some(w=>w instanceof Gtk.Picture&&w.get_paintable()?.get_intrinsic_width()===1800),'Preview did not load original 1800px image');
   for(const label of ['İndir','İndir ve Uygula','Sadece Uygula'])if(widgets(preview).some(w=>w instanceof Gtk.Button&&w.label===label))throw Error('Local image exposes download action: '+label);
-  const zoom=widgets(preview).find(w=>w instanceof Gtk.ToggleButton&&w.label==='%100');zoom.set_active(true);await delay(100);
+  const zoom=widgets(preview).find(w=>w instanceof Gtk.ToggleButton&&w.label==='100%');zoom.set_active(true);await delay(100);
   const picture=widgets(preview).find(w=>w instanceof Gtk.Picture);if(picture.width_request!==1800)throw Error('100% view is not native pixels');zoom.set_active(false);await delay(100);await snapshot(window,'-dialog');
   const fixture=Gio.File.new_for_path(`${GLib.get_home_dir()}/fixture.png`).get_uri();
   button(preview,'Açık tema için uygula').emit('clicked');checkPair(fixture,originalDark);

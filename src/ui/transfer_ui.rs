@@ -587,17 +587,21 @@ pub(super) fn fill_card_actions(
 
     // Bottom linked 1-row apply pair (exact uniform height)
     if actions.apply || actions.download {
+        let light_full = crate::i18n::tr("common.apply_light");
+        let light_short = crate::i18n::tr("common.apply_light_short");
+        let dark_full = crate::i18n::tr("common.apply_dark");
+        let dark_short = crate::i18n::tr("common.apply_dark_short");
         for (scope, label, short, icon) in [
             (
                 "light",
-                "Açık tema için uygula",
-                "Açığa uygula",
+                light_full.as_str(),
+                light_short.as_str(),
                 "weather-clear-symbolic",
             ),
             (
                 "dark",
-                "Koyu tema için uygula",
-                "Koyuya uygula",
+                dark_full.as_str(),
+                dark_short.as_str(),
                 "weather-clear-night-symbolic",
             ),
         ] {
@@ -661,18 +665,22 @@ pub(super) fn fill_actions(state: &Rc<State>, a: &gtk::Box, item: &Wallpaper, co
     let mut has_primary = false;
     if actions.apply || actions.download {
         has_primary = true;
+        let light_full = crate::i18n::tr("common.apply_light");
+        let light_short = crate::i18n::tr("common.apply_light_short");
+        let dark_full = crate::i18n::tr("common.apply_dark");
+        let dark_short = crate::i18n::tr("common.apply_dark_short");
         for (scope, label, short, icon, primary) in [
             (
                 "light",
-                "Açık tema için uygula",
-                "Açığa uygula",
+                light_full.as_str(),
+                light_short.as_str(),
                 "weather-clear-symbolic",
                 false,
             ),
             (
                 "dark",
-                "Koyu tema için uygula",
-                "Koyuya uygula",
+                dark_full.as_str(),
+                dark_short.as_str(),
                 "weather-clear-night-symbolic",
                 true,
             ),
