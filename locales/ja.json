@@ -165,7 +165,14 @@
     "comments": "GNOME向けマルチソース壁紙ギャラリーとOKLab適応カラーエンジン。",
     "credits_title": "インスピレーションとエコシステム",
     "ack_title": "開発ノート",
-    "ack_body": "AI支援開発（vibe coding）ワークフローで設計・検証されました"
+    "ack_body": "AI支援開発（vibe coding）ワークフローで設計・検証されました",
+    "whats_new_intro": "Duvar 0.6.0 は刷新された Adwaita UI、Pro Lightbox、10言語対応、トップバーのフローティンググラスカプセル、推奨デスクトップ設定スクリプトを搭載しています。",
+    "whats_new_1": "ライト・ダーク両モードでスタイルと透過度をリアルタイム調整できる環境色フローティンググラスカプセル",
+    "whats_new_2": "OKLab 主色抽出、16分割トップバーコントラスト解析、User Themes 不要の直接 Shell スタイル読み込み",
+    "whats_new_3": "8個の LIFO サムネイルワーカー、180件 LRU キャッシュ、スクロール飛びのない 6レーン並列 Rust エンジン",
+    "whats_new_4": "カーソル基準ホイールズーム、ドラッグ移動、右クリックメニュー、情報ドロワー付き Pro Lightbox",
+    "whats_new_5": "オリジナルの Adwaita 風アプリアイコンとドキュメント化された locales カタログによる10言語対応",
+    "whats_new_6": "ワンコマンドの推奨 GNOME デスクトップ構築スクリプトおよび Polkit・Shell ダイアログ表示修正"
   },
   "colors": {
     "group_theme_title": "壁紙からテーマを生成",

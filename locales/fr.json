@@ -165,7 +165,14 @@
     "comments": "Galerie de fonds d’écran multi-sources et moteur de couleurs adaptatif OKLab pour GNOME.",
     "credits_title": "Inspiration et écosystème",
     "ack_title": "Note de conception",
-    "ack_body": "Conçu et vérifié via un flux de développement assisté par IA (vibe coding)"
+    "ack_body": "Conçu et vérifié via un flux de développement assisté par IA (vibe coding)",
+    "whats_new_intro": "Duvar 0.6.0 apporte une interface Adwaita repensée, Pro Lightbox, 10 langues intégrées, des capsules de verre flottantes dans la barre supérieure et un script d'installation de bureau recommandé.",
+    "whats_new_1": "Capsules de verre flottantes teintées en modes clair et sombre avec réglages en direct du style et de la densité",
+    "whats_new_2": "Moteur de couleur dominante OKLab, analyse de contraste en 16 zones et chargement direct des feuilles de style Shell sans User Themes",
+    "whats_new_3": "Moteur Rust parallèle à 6 voies avec 8 workers LIFO, cache LRU de 180 éléments et défilement fluide sans saut",
+    "whats_new_4": "Pro Lightbox avec zoom molette centré sur le curseur, glisser pour déplacer, menu contextuel et tiroir de métadonnées",
+    "whats_new_5": "Icône originale de style Adwaita et 10 langues intégrées dans un catalogue locales documenté",
+    "whats_new_6": "Script de configuration GNOME recommandé en une commande et correctifs d'affichage des dialogues Polkit et Shell"
   },
   "colors": {
     "group_theme_title": "Thème issu du fond d’écran",

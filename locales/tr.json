@@ -165,7 +165,14 @@
     "comments": "GNOME için çok kaynaklı duvar kâğıdı galerisi ve duvar kâğıdına uyarlanan dinamik renk motoru.",
     "credits_title": "Esinlenme ve ekosistem",
     "ack_title": "Üretim notu",
-    "ack_body": "Yapay zekâ destekli geliştirme (vibe coding) akışıyla tasarlandı ve doğrulandı"
+    "ack_body": "Yapay zekâ destekli geliştirme (vibe coding) akışıyla tasarlandı ve doğrulandı",
+    "whats_new_intro": "Duvar 0.6.0; baştan tasarlanan Adwaita arayüzü, Pro Lightbox, 10 yerleşik dil (varsayılan Türkçe), cam üst çubuk kapsülleri ve önerilen masaüstü kurulum betiği ile gelir.",
+    "whats_new_1": "Hem açık hem koyu temada canlı stil ve yoğunluk ayarlı, tema tonlu yüzen cam üst çubuk kapsülleri",
+    "whats_new_2": "OKLab baskın renk motoru, 16 dilimli üst çubuk kontrast analizi ve User Themes olmadan doğrudan Shell stil yükleme",
+    "whats_new_3": "8 LIFO küçük resim işçisi, 180 ögelik LRU bellek önbelleği ve kaydırma sıçramasız 6 şeritli Rust motoru",
+    "whats_new_4": "İmleç odaklı tekerlek yakınlaştırma, sürükleyerek gezme, sağ tık menüsü ve açılır bilgi çekmeceli Pro Lightbox",
+    "whats_new_5": "Özgün Adwaita uygulama ikonu ve belgelenmiş locales kataloğunda varsayılan Türkçe dahil 10 dil desteği",
+    "whats_new_6": "Tek komutluk önerilen GNOME masaüstü kurulum betiği ile Polkit ve Shell diyalog görünüm düzeltmeleri"
   },
   "colors": {
     "group_theme_title": "Duvar kâğıdından tema",

@@ -165,7 +165,14 @@
     "comments": "Hintergrundbild-Galerie mit mehreren Quellen und adaptiver OKLab-Farbengine für GNOME.",
     "credits_title": "Inspiration und Ökosystem",
     "ack_title": "Entwicklungshinweis",
-    "ack_body": "Entworfen und geprüft in einem KI-gestützten Entwicklungsworkflow (Vibe Coding)"
+    "ack_body": "Entworfen und geprüft in einem KI-gestützten Entwicklungsworkflow (Vibe Coding)",
+    "whats_new_intro": "Duvar 0.6.0 bietet eine neu gestaltete Adwaita-Oberfläche, Pro Lightbox, 10 integrierte Sprachen, schwebende Glaskapseln in der oberen Leiste und ein empfohlenes Desktop-Setup-Skript.",
+    "whats_new_1": "Umgebungsgetönte schwebende Glaskapseln im hellen und dunklen Modus mit Live-Steuerung für Stil und Dichte",
+    "whats_new_2": "OKLab-Dominanzfarben-Engine, 16-Zonen-Kontrastanalyse und direktes Laden von Shell-Stylesheets ohne User Themes",
+    "whats_new_3": "6-spurige parallele Rust-Engine mit 8 LIFO-Vorschau-Workern, 180-Elemente-LRU-Cache und ruckelfreiem Scrollen",
+    "whats_new_4": "Pro Lightbox mit Mausrad-Zoom am Zeiger, Ziehen zum Verschieben, Kontextmenü und seitlicher Metadaten-Ansicht",
+    "whats_new_5": "Eigenständiges Adwaita-App-Symbol und 10 integrierte Sprachen in einem dokumentierten locales-Katalog",
+    "whats_new_6": "Ein-Befehl-Setup-Skript für den empfohlenen GNOME-Desktop sowie Design-Korrekturen für Polkit- und Shell-Dialoge"
   },
   "colors": {
     "group_theme_title": "Design aus Hintergrundbild",

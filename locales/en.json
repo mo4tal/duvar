@@ -165,7 +165,14 @@
     "comments": "Multi-source wallpaper gallery and adaptive OKLab color engine for GNOME.",
     "credits_title": "Inspiration and Ecosystem",
     "ack_title": "Build Note",
-    "ack_body": "Designed and verified through an AI-assisted development (vibe coding) workflow"
+    "ack_body": "Designed and verified through an AI-assisted development (vibe coding) workflow",
+    "whats_new_intro": "Duvar 0.6.0 brings a redesigned Adwaita interface, Pro Lightbox, 10 built-in languages (Turkish default), floating glass top-panel capsules, and a recommended desktop setup script.",
+    "whats_new_1": "Ambient-tinted floating glass top-panel capsules in both light and dark modes with live style and density controls",
+    "whats_new_2": "OKLab dominant color engine, 16-slice top-bar contrast profiling, and direct Shell stylesheet loading without requiring User Themes",
+    "whats_new_3": "6-lane parallel Rust engine with 8 LIFO thumbnail workers, 180-item LRU cache, and zero-splice smooth scrolling",
+    "whats_new_4": "Pro Lightbox with cursor-anchored wheel zoom, drag-to-pan, right-click menu, and slide-in metadata drawer",
+    "whats_new_5": "Original Adwaita app icon and 10 built-in languages in a documented locales catalog",
+    "whats_new_6": "One-command recommended GNOME desktop preset installer plus Polkit and Shell dialog styling fixes"
   },
   "colors": {
     "group_theme_title": "Wallpaper-Driven Theme",

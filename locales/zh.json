@@ -165,7 +165,14 @@
     "comments": "面向 GNOME 的多来源壁纸图库与 OKLab 自适应配色引擎。",
     "credits_title": "灵感与生态",
     "ack_title": "开发说明",
-    "ack_body": "通过 AI 辅助开发（vibe coding）工作流设计与验证"
+    "ack_body": "通过 AI 辅助开发（vibe coding）工作流设计与验证",
+    "whats_new_intro": "Duvar 0.6.0 带来全新设计的 Adwaita 界面、Pro Lightbox、10 种内置语言、顶部栏悬浮玻璃胶囊以及推荐桌面一键配置脚本。",
+    "whats_new_1": "浅色和深色模式下均支持带环境色调的顶部栏悬浮玻璃胶囊，可实时调节风格与透明度",
+    "whats_new_2": "OKLab 主色聚类、16 分区顶部栏对比度分析，无需 User Themes 即可直接加载 Shell 样式表",
+    "whats_new_3": "6 通道并行 Rust 引擎，含 8 个 LIFO 缩略图工作线程、180 项 LRU 缓存和无跳动平滑滚动",
+    "whats_new_4": "Pro Lightbox 支持以光标为中心的滚轮缩放、拖动平移、右键菜单和侧滑元数据抽屉",
+    "whats_new_5": "原创 Adwaita 风格应用图标以及带完整文档目录 locales 的 10 种内置语言",
+    "whats_new_6": "一键式推荐 GNOME 桌面配置脚本以及 Polkit 与 Shell 对话框样式修复"
   },
   "colors": {
     "group_theme_title": "壁纸自适应主题",

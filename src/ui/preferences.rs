@@ -409,6 +409,19 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
             let credits_title = crate::i18n::tr("about.credits_title");
             let ack_title = crate::i18n::tr("about.ack_title");
             let ack_body = crate::i18n::tr("about.ack_body");
+            let wn_intro = glib::markup_escape_text(&crate::i18n::tr("about.whats_new_intro"));
+            let wn_items = [
+                "about.whats_new_1",
+                "about.whats_new_2",
+                "about.whats_new_3",
+                "about.whats_new_4",
+                "about.whats_new_5",
+                "about.whats_new_6",
+            ]
+            .iter()
+            .map(|k| format!("<li>{}</li>", glib::markup_escape_text(&crate::i18n::tr(k))))
+            .collect::<String>();
+            let release_notes = format!("<p>{wn_intro}</p><ul>{wn_items}</ul>");
             let about = adw::AboutDialog::builder()
                 .application_name("Duvar")
                 .application_icon("io.github.mo4tal.Duvar")
@@ -421,21 +434,15 @@ pub(super) fn settings(state: &Rc<State>, page: &adw::PreferencesPage) {
                 .license_type(gtk::License::Gpl30)
                 .comments(&comments)
                 .release_notes_version(env!("CARGO_PKG_VERSION"))
-                .release_notes(
-                    "<p>0.6.0 introduces a redesigned Adwaita interface, Pro Lightbox, 10 built-in languages (Turkish default), and ambient-tinted floating glass top-panel capsules.</p>\
-                     <ul>\
-                       <li>Floating glass top-panel capsules in both light and dark modes with live style &amp; density controls</li>\
-                       <li>OKLab dominant color clustering, 16-slice top-bar contrast profiling, and direct Shell stylesheet support without requiring User Themes</li>\
-                       <li>6-lane parallel Rust engine with 8 LIFO thumbnail workers, 180-item LRU cache, and zero-splice infinite scrolling</li>\
-                       <li>Pro Lightbox with cursor-anchored wheel zoom, drag-to-pan, right-click popover, and slide-in metadata drawer</li>\
-                       <li>Original Adwaita app icon and 10 languages in a dedicated /locales catalog</li>\
-                     </ul>",
-                )
+                .release_notes(&release_notes)
                 .debug_info(&debug_info)
                 .build();
             about.add_credit_section(
                 Some(&credits_title),
-                &["WSelector (functional inspiration)", "GNOME Shell, GTK 4 & Libadwaita"],
+                &[
+                    "WSelector (functional inspiration)",
+                    "GNOME Shell, GTK 4 & Libadwaita",
+                ],
             );
             about.add_acknowledgement_section(Some(&ack_title), &[ack_body.as_str()]);
             about.present(Some(&win));
